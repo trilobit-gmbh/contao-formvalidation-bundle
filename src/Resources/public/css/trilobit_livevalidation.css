@@ -1,0 +1,114 @@
+input:required,
+input:invalid {
+    box-shadow: none;
+}
+
+input[type="file"].mandatory,
+input[type="file"].mandatory.LV_valid_field,
+input[type="file"].mandatory.LV_invalid_field,
+input[type="file"],
+input.upload.mandatory,
+input.upload.mandatory.LV_valid_field,
+input.upload.mandatory.LV_invalid_field,
+input.upload {
+    background-color: transparent;
+}
+
+.mandatory.LV_invalid_field,
+textarea.error.LV_valid_field,
+select.error.LV_valid_field,
+input[type="password"].error.LV_valid_field,
+input[type="text"].error.LV_valid_field,
+input[type="number"].error.LV_valid_field,
+input[type="date"].error.LV_valid_field,
+input[type="time"].error.LV_valid_field,
+input[type="datetime"].error.LV_valid_field,
+input[type="tel"].error.LV_valid_field,
+input[type="email"].error.LV_valid_field,
+input[type="url"].error.LV_valid_field,
+textarea.mandatory,
+select.mandatory,
+input[type="password"].mandatory,
+input[type="text"].mandatory,
+input[type="number"].mandatory,
+input[type="date"].mandatory,
+input[type="time"].mandatory,
+input[type="datetime"].mandatory,
+input[type="tel"].mandatory,
+input[type="email"].mandatory,
+input[type="url"].mandatory,
+textarea.LV_invalid_field,
+select.LV_invalid_field,
+input[type="password"].LV_invalid_field,
+input[type="text"].LV_invalid_field,
+input[type="number"].LV_invalid_field,
+input[type="date"].LV_invalid_field,
+input[type="time"].LV_invalid_field,
+input[type="datetime"].LV_invalid_field,
+input[type="tel"].LV_invalid_field,
+input[type="email"].LV_invalid_field,
+input[type="url"].LV_invalid_field {
+    background-color: #cc000011;
+    border-color: #c00;
+}
+
+textarea,
+select,
+input[type="password"],
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime"],
+input[type="tel"],
+input[type="email"],
+input[type="url"],
+textarea.LV_valid_field,
+select.LV_valid_field,
+input[type="password"].LV_valid_field,
+input[type="text"].LV_valid_field,
+input[type="number"].LV_valid_field,
+input[type="date"].LV_valid_field,
+input[type="time"].LV_valid_field,
+input[type="datetime"].LV_valid_field,
+input[type="tel"].LV_valid_field,
+input[type="email"].LV_valid_field,
+input[type="url"].LV_valid_field {
+    background-color: #00cc0011;
+    border-color: #0c0;
+}
+
+span.LV_invalid {
+	margin:0;
+	color: #c00;
+}
+
+/* JS-Fehlermeldungen nur nach FormSubmit? *
+span.LV_invalid,
+.radio_container span.LV_invalid,
+.checkbox_container span.LV_invalid {
+    display: none;
+}
+
+.formSubmitted span.LV_invalid {
+    display: inline;
+}
+
+.formSubmitted .radio_container span.LV_invalid,
+.formSubmitted .checkbox_container span.LV_invalid {
+    display: block;
+    margin-left: 0;
+}
+/* */
+
+
+/* JS-Fehlermeldungen bereits bei der Eingabe? */
+span.LV_invalid {
+    display: inline;
+}
+
+.radio_container span.LV_invalid,
+.checkbox_container span.LV_invalid {
+    display: block;
+    margin-left: 0;
+}
