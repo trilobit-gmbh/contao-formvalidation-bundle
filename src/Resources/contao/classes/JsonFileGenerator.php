@@ -28,19 +28,27 @@ class JsonFileGenerator
 {
 
     /**
-     * @param $elements
+     * @param $arrElements
      * @param $formId
      * @throws \Exception
      */
-    public function createJsonFile($elements, $formId)
+    public function createJsonFile($arrElements, $formId)
     {
         // prepare validation file content
         $liveValidationValue = 'var trilobit_liveValidation;'
                              . 'if (!trilobit_liveValidation) { trilobit_liveValidation = new Array(); }'
                              . 'trilobit_liveValidation.push('
-                             . $this->createJson($formId, $elements)
+                             . $this->createJson($formId, $arrElements)
                              . ');'
                              ;
+        /*
+        $liveValidationValue = 'var trilobit_liveValidation = trilobit_liveValidation || [];'
+                             . 'if (!trilobit_liveValidation) { trilobit_liveValidation = new Array(); }'
+                             . 'trilobit_liveValidation.push('
+                             . $this->createJson($formId, $arrElements)
+                             . ');'
+                             ;
+        */
 
         // get checksum
         $strChecksum = md5($liveValidationValue);
@@ -73,14 +81,21 @@ class JsonFileGenerator
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
 
-        if (!Config::get('livevalidationDisableDefaultCss')
-        )
+        if (!Config::get('trilobitformvalidationDisableDefaultCss'))
         {
             $GLOBALS['TL_CSS'][] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
         }
 
         // Include JavaScripts as last JS
-        $GLOBALS['TL_HEAD'][] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
+        if (!Config::get('trilobitformvalidationDisableHeadJs'))
+        {
+            $GLOBALS['TL_HEAD']['trilobitformvalidation_f' . $formId] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
+        }
+        else
+        {
+            $GLOBALS['TL_FORMVALIDATION']['FORMS'][$formId] = $liveValidationValue;
+        }
+
     }
 
     /**
@@ -93,11 +108,11 @@ class JsonFileGenerator
 
     /**
      * @param $formId
-     * @param $elements
+     * @param $arrElements
      * @return string
      * @throws \Exception
      */
-    protected function createJson($formId, $elements)
+    protected function createJson($formId, $arrElements)
     {
         // exclution for alphanumeric check
         $alnumExtend = array('#', '&', '(', ')', '/', '>', '<', '=');
@@ -142,112 +157,112 @@ class JsonFileGenerator
 
         $arrValidation = array();
 
-        foreach ($elements as $elementKey => $elementValue)
+        foreach ($arrElements as $key => $value)
         {
-            $currentField = array();
+            $arrField = array();
 
-            if (   $elementValue['mandatory']
-                && $elementValue['mandatory'] == 1
-                && $elementValue['type'] != 'checkbox'
-                && $elementValue['type'] != 'radio'
+            if (   $value['mandatory']
+                && $value['mandatory'] == 1
+                && $value['type'] != 'checkbox'
+                && $value['type'] != 'radio'
             )
             {
-                $currentField[0]['validationType'] = 'Validate.Presence';
-                $currentField[0]['validationAttributes']['failureMessage'] = $elementValue['mandatoryMessage'];
+                $arrField[0]['validationType'] = 'Validate.Presence';
+                $arrField[0]['validationAttributes']['failureMessage'] = $value['mandatoryMessage'];
             }
 
-            if (   $elementValue['type'] == 'checkbox'
-                || $elementValue['type'] == 'radio'
+            if (   $value['type'] == 'checkbox'
+                || $value['type'] == 'radio'
             )
             {
-                if (   $elementValue['mandatory']
-                    && $elementValue['mandatory'] == 1
+                if (   $value['mandatory']
+                    && $value['mandatory'] == 1
                 )
                 {
-                    $currentField[1]['validationType'] = $elementValue['type'];
-                    $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['mandatoryMessage'];
-                    $currentField[1]['validationAttributes']['mandatory'] = 1;
+                    $arrField[1]['validationType'] = $value['type'];
+                    $arrField[1]['validationAttributes']['failureMessage'] = $value['mandatoryMessage'];
+                    $arrField[1]['validationAttributes']['mandatory'] = 1;
                 }
             }
-            else if (   $elementValue['type'] == 'digit'
-                     || $elementValue['type'] == 'captcha'
+            else if (   $value['type'] == 'digit'
+                     || $value['type'] == 'captcha'
             )
             {
-                $currentField[1]['validationAttributes']['notANumberMessage'] = $elementValue['failureMessage'];
+                $arrField[1]['validationAttributes']['notANumberMessage'] = $value['failureMessage'];
             }
-            else if (   $elementValue['type'] == 'alpha'
-                     || $elementValue['type'] == 'alnum'
-                     || $elementValue['type'] == 'date'
-                     || $elementValue['type'] == 'datim'
-                     || $elementValue['type'] == 'time'
-                     || $elementValue['type'] == 'phone'
-                     || $elementValue['type'] == 'email'
-                     || $elementValue['type'] == 'url'
-                     || $elementValue['type'] == 'extnd'
-                     || $elementValue['type'] == 'passwordMatch'
+            else if (   $value['type'] == 'alpha'
+                     || $value['type'] == 'alnum'
+                     || $value['type'] == 'date'
+                     || $value['type'] == 'datim'
+                     || $value['type'] == 'time'
+                     || $value['type'] == 'phone'
+                     || $value['type'] == 'email'
+                     || $value['type'] == 'url'
+                     || $value['type'] == 'extnd'
+                     || $value['type'] == 'passwordMatch'
             )
             {
-                $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
+                $arrField[1]['validationAttributes']['failureMessage'] = $value['failureMessage'];
             }
 
             // set different config for each formcheck-type
-            switch( $elementValue['type'] )
+            switch($value['type'])
             {
                 // Fieldtype Digits
                 // only digits allowed
                 case 'digit':
-                    $currentField[1]['validationType'] = 'Validate.Numericality';
+                    $arrField[1]['validationType'] = 'Validate.Numericality';
                     break;
 
                 // Fieldtype Alphabetic
                 // only alphabetic chars allowed
                 case 'alpha':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexAlpha;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexAlpha;
                     break;
 
                 // Fieldtype Alphanumeric
                 // digits and alphabetic chars
                 case 'alnum':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexAlnum;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexAlnum;
                     break;
 
                 // Fieldtype Date
                 // only a valid date is allowed
                 // Format is set up in the backend settings
                 case 'date':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexDate;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexDate;
                     break;
 
                 // Fieldtype Datim
                 // Only a valid date and time are allowed
                 // Format is set up in the backend settings
                 case 'datim':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexDatim;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexDatim;
                     break;
 
                 // Fieldtype Time
                 // Only a valid time is allowed
                 // Format is set up in the backend settings
                 case 'time':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexTime;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexTime;
                     break;
 
                 // Fieldtype phone
                 // Only a valid phonenumber
                 case 'phone':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexPhone;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexPhone;
                     break;
 
                 // Fieldtype Email
                 // Needs a valid Email
                 case 'email':
-                    $currentField[1]['validationType'] = 'Validate.Email';
+                    $arrField[1]['validationType'] = 'Validate.Email';
                     break;
 
                 // Fieldtype Email
@@ -260,67 +275,67 @@ class JsonFileGenerator
                 // Feldtyp URL
                 // Only a valid URL is allowed
                 case 'url':
-                    $currentField[1]['validationType'] = 'Validate.Format';
-                    $currentField[1]['validationAttributes']['pattern'] = $regexUrl;
+                    $arrField[1]['validationType'] = 'Validate.Format';
+                    $arrField[1]['validationAttributes']['pattern'] = $regexUrl;
                     break;
 
                 // Feldtyp Extnd
                 // All Chars are allowed.
                 // Exclusion: # & ( ) / > = <
                 case 'extnd':
-                    $currentField[1]['validationType'] = 'Validate.Exclusion';
-                    $currentField[1]['validationAttributes']['within'] = $alnumExtend;
-                    $currentField[1]['validationAttributes']['partialMatch'] = true;
+                    $arrField[1]['validationType'] = 'Validate.Exclusion';
+                    $arrField[1]['validationAttributes']['within'] = $alnumExtend;
+                    $arrField[1]['validationAttributes']['partialMatch'] = true;
                     break;
 
                 case 'passwordMatch':
-                    if (preg_match("/(.*?)\_confirm/", $elementKey, $treffer))
+                    if (preg_match("/(.*?)\_confirm/", $key, $treffer))
                     {
-                        $currentField[1]['validationType'] = 'Validate.Confirmation';
-                        $currentField[1]['validationAttributes']['match'] = $treffer[1];
+                        $arrField[1]['validationType'] = 'Validate.Confirmation';
+                        $arrField[1]['validationAttributes']['match'] = $treffer[1];
                     }
                     break;
 
                 case 'captcha':
-                    $currentField[1]['validationType'] = 'Validate.Numericality';
+                    $arrField[1]['validationType'] = 'Validate.Numericality';
                     break;
 
                 case 'checkbox':
-                    $currentField[1]['validationType'] = 'trilobitCheckboxValidation';
-                    $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
-                    $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
+                    $arrField[1]['validationType'] = 'trilobitCheckboxValidation';
+                    $arrField[1]['validationAttributes']['name'] = $value['name'];
+                    $arrField[1]['validationAttributes']['elements'] = $value['elements'];
                     break;
 
                 case 'radio':
-                    $currentField[1]['validationType'] = 'trilobitRadioValidation';
-                    $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
-                    $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
+                    $arrField[1]['validationType'] = 'trilobitRadioValidation';
+                    $arrField[1]['validationAttributes']['name'] = $value['name'];
+                    $arrField[1]['validationAttributes']['elements'] = $value['elements'];
                     break;
             }
 
-            if ($elementValue['minlength'])
+            if ($value['minlength'])
             {
-                $currentField[2]['validationType'] = 'Validate.Length';
-                $currentField[2]['validationAttributes']['minimum'] = $elementValue['minlength'];
-                $currentField[2]['validationAttributes']['tooShortMessage'] = $elementValue['minlengthMessage'];
+                $arrField[2]['validationType'] = 'Validate.Length';
+                $arrField[2]['validationAttributes']['minimum'] = $value['minlength'];
+                $arrField[2]['validationAttributes']['tooShortMessage'] = $value['minlengthMessage'];
             }
 
             // in case of a maxlength
-            if ($elementValue['maxlength'])
+            if ($value['maxlength'])
             {
-                $currentField[2]['validationType'] = 'Validate.Length';
-                $currentField[2]['validationAttributes']['maximum'] = $elementValue['maxlength'];
-                $currentField[2]['validationAttributes']['tooShortMessage'] = $elementValue['maxlengthMessage'];
+                $arrField[2]['validationType'] = 'Validate.Length';
+                $arrField[2]['validationAttributes']['maximum'] = $value['maxlength'];
+                $arrField[2]['validationAttributes']['tooShortMessage'] = $value['maxlengthMessage'];
             }
 
 
             // add current field to validation config
-            //$arrValidation[$elementKey]['validations'] = $currentField;
+            //$arrValidation[$key]['validations'] = $currentField;
 
             $arrValidation[] = array
             (
-                'key'         => $elementKey,
-                'validations' => $currentField,
+                'key'         => $key,
+                'validations' => $arrField,
             );
         }
 
