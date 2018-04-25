@@ -15,6 +15,7 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Database;
 use Contao\StringUtil;
+use Contao\Config;
 
 /**
  * Class ModuleFormGenerator
@@ -117,7 +118,9 @@ class ModuleFormGenerator extends \Contao\Form
 
             if ($objFields->type == 'password')
             {
-                $arrElements[$strPrefix . $objFields->id]['minlength'] = 8;
+                $intMinPasswordLength = Config::get('minPasswordLength');
+
+                $arrElements[$strPrefix . $objFields->id]['minlength'] = $intMinPasswordLength;
 
                 $arrElements[$strPrefix . $objFields->id . '_confirm']['type'] = 'passwordMatch';
 
@@ -128,7 +131,7 @@ class ModuleFormGenerator extends \Contao\Form
                 }
 
                 $arrElements[$strPrefix . $objFields->id . '_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix . $objFields->id . '_confirm', 'passwordMatch');
-                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $intMinPasswordLength);
             }
         }
 
