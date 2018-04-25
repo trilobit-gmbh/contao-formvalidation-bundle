@@ -5,19 +5,19 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
+use Contao\Config;
 use Contao\Controller;
-
+use Contao\Date;
+use Contao\Environment;
+use Contao\Input;
 
 /**
  * Class JsonFileGenerator
@@ -72,7 +72,7 @@ class JsonFileGenerator extends Controller
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
 
-        if (!\Config::get('livevalidationDisableDefaultCss')
+        if (!Config::get('livevalidationDisableDefaultCss')
         )
         {
             $GLOBALS['TL_CSS'][] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
@@ -82,7 +82,6 @@ class JsonFileGenerator extends Controller
         $GLOBALS['TL_HEAD'][] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
     }
 
-
     /**
      *
      */
@@ -90,7 +89,6 @@ class JsonFileGenerator extends Controller
     {
         $GLOBALS['TL_HEAD'][] = '<script type="text/javascript">var trilobitFormSubmitted = true;</script>';
     }
-
 
     /**
      * @param $formId
@@ -126,7 +124,7 @@ class JsonFileGenerator extends Controller
         $regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)?(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)+?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+@\w[\w_\.-]+\.[a-z]{2,}$/i';
 
         // Load Contao date-regex
-        $objDate    = new \Date();
+        $objDate    = new Date();
         $regexDate  = $objDate->getRegexp($GLOBALS['TL_CONFIG']['dateFormat']);
         $regexDatim = $objDate->getRegexp($GLOBALS['TL_CONFIG']['datimFormat']);
         $regexTime  = $objDate->getRegexp($GLOBALS['TL_CONFIG']['timeFormat']);
@@ -334,15 +332,14 @@ class JsonFileGenerator extends Controller
         return html_entity_decode(json_encode($arrValidation));
     }
 
-
     /**
      * @return bool
      */
     public function getBELoginStatus()
     {
         $this->import('Database');
-        $objInput = \Input::getInstance();
-        $objEnvironment = \Environment::getInstance();
+        $objInput = Input::getInstance();
+        $objEnvironment = Environment::getInstance();
 
         $strCookie = 'BE_USER_AUTH';
 

@@ -210,12 +210,26 @@ trilobit.deleteServerErrorMessage = function()
            }
         }
 
+        message = document.createElement('span');
+
+        if (errorNode !== undefined)
+        {
+            if (errorNode.childNodes[0].textContent != this.message)
+            {
+                message.appendChild(document.createTextNode(errorNode.childNodes[0].textContent));
+                message.appendChild(document.createTextNode(' '));
+            }
+        }
+
+        message.appendChild(document.createTextNode(this.message));
+
         if (errorNode)
         {
             element.parentNode.removeChild(errorNode);
         }
 
-        this.insertMessage(this.createMessageSpan());
+        this.insertMessage(message);
+        //this.insertMessage(this.createMessageSpan());
         this.addFieldClass();
     };
 };
@@ -303,16 +317,15 @@ trilobit.checkboxRadioValidation = function(formCount, checkboxRadioGroup)
         id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
 
         // ergänzende Kontrolle, ob es das Feld gibt
-        if (typeof id !== "undefined")
+        if (   typeof id !== "undefined"
+            && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
+        )
         {
             // Setze Clickevent auf jede Checkbox
-            if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null)
+            document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).onclick = function()
             {
-                document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).onclick = function()
-                {
-                    trilobit.countOfCheckedBoxes(checkboxRadioGroup);
-                };
-            }
+                trilobit.countOfCheckedBoxes(checkboxRadioGroup);
+            };
         }
     }
 };
@@ -323,28 +336,36 @@ trilobit.checkboxRadioValidation = function(formCount, checkboxRadioGroup)
 */
 trilobit.isCheckboxRadioValid = function(formCount)
 {
-    var returnValueForm, i, checkboxRadioGroup, isMandatory;
+    var returnValueForm, i, checkboxRadioGroup, isMandatory, id;
 
     returnValueForm = true;
 
     for (i=0; i<trilobit.allCheckboxRadio[formCount].length; i++)
     {
-        checkboxRadioGroup = trilobit.allCheckboxRadio[formCount][i];
-
         isMandatory = false;
 
-        if (   typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
-            && checkboxRadioGroup.validations[1].validationAttributes.mandatory == 1
-        )
-        {
-            isMandatory = true;
-        }
+        checkboxRadioGroup = trilobit.allCheckboxRadio[formCount][i];
 
-        if (   trilobit.countOfCheckedBoxes(checkboxRadioGroup) == 0
-            && isMandatory
+        id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
+
+        // ergänzende Kontrolle, ob es das Feld gibt
+        if (   typeof id !== "undefined"
+            && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
         )
         {
-            returnValueForm = false;
+            if (   typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
+                && checkboxRadioGroup.validations[1].validationAttributes.mandatory == 1
+                )
+            {
+                isMandatory = true;
+            }
+
+            if (   trilobit.countOfCheckedBoxes(checkboxRadioGroup) == 0
+                && isMandatory
+                )
+            {
+                returnValueForm = false;
+            }
         }
     }
 
@@ -369,7 +390,9 @@ trilobit.countOfCheckedBoxes = function(checkboxRadioGroup)
 
         id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
 
-        if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).checked)
+        if (   document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
+            && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).checked
+        )
         {
             clickedElements++;
         }
@@ -439,8 +462,11 @@ trilobit.createCheckboxRadioErrorMessage = function(checkboxRadioGroup)
         var lastElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
         lastElement.parentNode.parentNode.appendChild(errorMessage);
         */
-        var firstElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
-        firstElement.parentNode.parentNode.insertBefore(errorMessage,firstElement.parentNode);
+        if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null)
+        {
+            var firstElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
+            firstElement.parentNode.parentNode.insertBefore(errorMessage,firstElement.parentNode);
+        }
     }
 };
 

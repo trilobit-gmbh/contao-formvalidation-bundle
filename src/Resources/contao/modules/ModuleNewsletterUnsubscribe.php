@@ -5,17 +5,13 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
-
 
 /**
  * Class ModuleNewsletterUnsubscribe
@@ -31,7 +27,6 @@ class ModuleNewsletterUnsubscribe extends \Contao\ModuleUnsubscribe
     {
         return parent::generate();
     }
-
 
     /**
      *
@@ -65,7 +60,7 @@ class ModuleNewsletterUnsubscribe extends \Contao\ModuleUnsubscribe
             }
         }
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_unsubscribe');
 
         return $strParentCompile;

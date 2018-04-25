@@ -5,23 +5,19 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
-
 
 /**
  * Class ModulePassword
  * @package Trilobit\FormvalidationBundle
  */
-class ModulePassword extends \ModulePassword
+class ModulePassword extends \Contao\ModulePassword
 {
 
     /**
@@ -31,7 +27,6 @@ class ModulePassword extends \ModulePassword
     {
         return parent::generate();
     }
-
 
     /**
      *
@@ -67,7 +62,7 @@ class ModulePassword extends \ModulePassword
         $elements['ctrl_password_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
         $elements['ctrl_password_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_password_confirm', 'passwordMatch');
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_lost_password');
 
         return $strParentCompile;

@@ -5,20 +5,16 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
-
-use Controller;
-
+use Contao\Controller;
+use Contao\Date;
 
 /**
  * Class Helper
@@ -57,7 +53,6 @@ class Helper extends Controller
         return $message;
     }
 
-
     /**
      * @param $field
      * @param $type
@@ -83,7 +78,7 @@ class Helper extends Controller
                 $message = $GLOBALS['TL_LANG']['ERR'][$type];
             }
 
-            $objDate = new \Date();
+            $objDate = new Date();
 
             if ($type == 'date')
             {
@@ -103,7 +98,6 @@ class Helper extends Controller
 
         return $message;
     }
-
 
     /**
      * @param $field
@@ -131,7 +125,6 @@ class Helper extends Controller
 
         return $message;
     }
-
 
     /**
      * @param $field

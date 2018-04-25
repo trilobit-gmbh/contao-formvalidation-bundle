@@ -5,15 +5,12 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
 /**
@@ -45,7 +42,7 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
         $elements['ctrl_password']['mandatory'] = 1;
         $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_close_account');
 
         return $strParentCompile;

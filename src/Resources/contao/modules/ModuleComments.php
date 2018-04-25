@@ -5,15 +5,12 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
 /**
@@ -30,7 +27,6 @@ class ModuleComments extends \Contao\ModuleComments
     {
         return parent::generate();
     }
-
 
     /**
      *
@@ -59,7 +55,7 @@ class ModuleComments extends \Contao\ModuleComments
         $elements['ctrl_comment']['mandatory'] = 1;
         $elements['ctrl_comment']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_comment', $GLOBALS['TL_LANG']['MSC']['com_comment'][0]);
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'com_tl_page_' . $this->pid);
 
         return $strParentCompile;

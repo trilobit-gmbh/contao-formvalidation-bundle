@@ -5,17 +5,13 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
-
 
 /**
  * Class ModulePersonalData
@@ -41,7 +37,6 @@ class ModulePersonalData extends \Contao\ModulePersonalData
 
         return parent::generate();
     }
-
 
     /**
      *
@@ -154,7 +149,7 @@ class ModulePersonalData extends \Contao\ModulePersonalData
 
         // creates new object of FileGenerator
         // submits config
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_member_' . $formId);
 
         return $strParentCompile;

@@ -5,17 +5,16 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
+use Contao\Database;
+use Contao\StringUtil;
 
 /**
  * Class ModuleFormGenerator
@@ -24,16 +23,15 @@ namespace Trilobit\FormvalidationBundle;
 class ModuleFormGenerator extends \Contao\Form
 {
     /**
-     * @return string
+     * @return mixed
      */
     public function generate()
     {
         return parent::generate();
     }
 
-
     /**
-     * @return string
+     * @return mixed
      */
     protected function compile()
     {
@@ -46,7 +44,8 @@ class ModuleFormGenerator extends \Contao\Form
         $formId = strlen($this->formID) ? $this->formID : $this->id;
 
         // Lade alle Formularfelder der jeweiligen Seite
-        $objFields = $this->Database->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible!=1 ORDER BY sorting")
+        $objFields = Database::getInstance()
+            ->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible!=1 ORDER BY sorting")
             ->execute($formId);
 
         $objValidationHelper = new Helper();
@@ -66,69 +65,6 @@ class ModuleFormGenerator extends \Contao\Form
 
             $prefix = '';
 
-            if (   $objFields->type == 'efgLookupRadio'
-                || $objFields->type == 'efgLookupCheckbox'
-            )
-            {
-                if ($objFields->type == 'efgLookupRadio')
-                {
-                    $objFields->type = 'radio';
-                }
-                else
-                {
-                    $objFields->type = 'checkbox';
-                }
-
-                // Loading Label / Value of EFG-Chechbox/Radios
-                $arrSettings = deserialize($objFields->efgLookupOptions);
-
-                $arrLookupField = explode('.', $arrSettings['lookup_field']);
-                $sqlLookupTable = $arrLookupField[0];
-                $sqlLookupField = $arrLookupField[1];
-
-                $arrLookupValField = explode('.', $arrSettings['lookup_val_field']);
-                $sqlLookupIdField = $arrLookupValField[1];
-
-                $arrLookupWhere = explode('.', $arrSettings['lookup_where']);
-                $strLookupWhere = \String::decodeEntities($arrLookupWhere[0]);
-
-                $sqlLookupWhere = (!empty($strLookupWhere) ? " WHERE " . $strLookupWhere : "");
-                $sqlLookupOrder = $arrLookupField[0] . '.' . $arrLookupField[1];
-
-                $sqlLookup = "SELECT " . $sqlLookupField . (!empty($sqlLookupIdField) ? ', ' : '') . $sqlLookupIdField . " FROM " . $sqlLookupTable . $sqlLookupWhere . (!empty($sqlLookupOrder) ? " ORDER BY " . $sqlLookupOrder : "");
-
-                if (!empty($sqlLookupTable))
-                {
-                    $objOptions = \Database::getInstance()->prepare($sqlLookup)->execute();
-                }
-
-                if ($objOptions->numRows)
-                {
-                    $arrOptions = array();
-                    $counter = 0;
-                    while ($arrOpt = $objOptions->fetchAssoc())
-                    {
-                        if ($sqlLookupIdField)
-                        {
-                            $arrOptions[$counter]['label'] = $arrOpt[$sqlLookupField];
-                            $arrOptions[$counter]['value'] = $arrOpt[$sqlLookupIdField];
-                        }
-                        else
-                        {
-                            $arrOptions[$counter]['label'] = $arrOpt[$sqlLookupField];
-                            $arrOptions[$counter]['value'] = $arrOpt[$sqlLookupField];
-                        }
-                        $counter++;
-                    }
-                    $objFields->options = serialize($arrOptions);
-                }
-            }
-
-            if ($objFields->type == 'efgLookupSelect')
-            {
-                $objFields->type = 'select';
-            }
-
             if (   $objFields->type == 'checkbox'
                 || $objFields->type == 'radio'
             )
@@ -143,6 +79,13 @@ class ModuleFormGenerator extends \Contao\Form
             }
             else
             {
+                if (   $objFields->type == 'select'
+                    || $objFields->type == 'upload'
+                )
+                {
+                    $objFields->rgxp = '';
+                }
+
                 $prefix = 'ctrl_';
                 $elements[$prefix . $objFields->id]['type'] = '';
 

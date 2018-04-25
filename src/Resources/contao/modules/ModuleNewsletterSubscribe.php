@@ -5,15 +5,12 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
 
 /**
@@ -30,7 +27,6 @@ class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
     {
         return parent::generate();
     }
-
 
     /**
      *
@@ -63,7 +59,7 @@ class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
             }
         }
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_subscribe');
 
         return $strParentCompile;

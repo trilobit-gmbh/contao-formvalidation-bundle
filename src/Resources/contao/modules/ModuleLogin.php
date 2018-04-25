@@ -5,17 +5,13 @@
  *
  * Copyright (C) 2005-2014 Leo Feyer
  *
- * @package   trilobit
- * @author    trilobit GmbH <http://www.trilobit.de>
- * @license   LPGL
- * @copyright trilobit GmbH
+ * @package     Trilobit
+ * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license     LGPL-3.0-or-later
+ * @copyright   trilobit GmbH
  */
 
-/**
- * Namespace
- */
 namespace Trilobit\FormvalidationBundle;
-
 
 /**
  * Class ModuleLogin
@@ -31,7 +27,6 @@ class ModuleLogin extends \Contao\ModuleLogin
     {
         return parent::generate();
     }
-
 
     /**
      *
@@ -52,7 +47,7 @@ class ModuleLogin extends \Contao\ModuleLogin
         $elements['password']['mandatory'] = 1;
         $elements['password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
 
-        $fileGenerator = new TrilobitJsonFileGenerator();
+        $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_login');
 
         return $strParentCompile;
