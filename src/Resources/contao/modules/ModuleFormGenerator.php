@@ -50,7 +50,7 @@ class ModuleFormGenerator extends \Contao\Form
 
         $objValidationHelper = new Helper();
 
-        $elements = array();
+        $arrElements = array();
 
         while($objFields->next())
         {
@@ -63,18 +63,18 @@ class ModuleFormGenerator extends \Contao\Form
                 continue;
             }
 
-            $prefix = '';
+            $strPrefix = '';
 
             if (   $objFields->type == 'checkbox'
                 || $objFields->type == 'radio'
             )
             {
-                $elements[$objFields->id]['type'] = $objFields->type;
-                $elements[$objFields->id]['name'] = $objFields->name;
+                $arrElements[$objFields->id]['type'] = $objFields->type;
+                $arrElements[$objFields->id]['name'] = $objFields->name;
 
                 foreach (unserialize($objFields->options) as $key => $value)
                 {
-                    $elements[$objFields->id]['elements'][$key] = $key;
+                    $arrElements[$objFields->id]['elements'][$key] = $key;
                 }
             }
             else
@@ -86,48 +86,49 @@ class ModuleFormGenerator extends \Contao\Form
                     $objFields->rgxp = '';
                 }
 
-                $prefix = 'ctrl_';
-                $elements[$prefix . $objFields->id]['type'] = '';
+                $strPrefix = 'ctrl_';
+                $arrElements[$strPrefix . $objFields->id]['type'] = '';
 
                 if ($objFields->rgxp != '')
                 {
-                    $elements[$prefix . $objFields->id]['type'] = $objFields->rgxp;
-                    $elements[$prefix . $objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($prefix . $objFields->id, $objFields->rgxp);
+                    $arrElements[$strPrefix . $objFields->id]['type'] = $objFields->rgxp;
+                    $arrElements[$strPrefix . $objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix . $objFields->id, $objFields->rgxp);
                 }
             }
 
             if ($objFields->mandatory)
             {
-                $elements[$prefix . $objFields->id]['mandatory'] = 1;
-                $elements[$prefix . $objFields->id]['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($prefix . $objFields->id, $objFields->label);
+                $arrElements[$strPrefix . $objFields->id]['mandatory'] = 1;
+                $arrElements[$strPrefix . $objFields->id]['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix . $objFields->id, $objFields->label);
 
             }
 
             if ($objFields->minlength)
             {
-                $elements[$prefix . $objFields->id]['minlength'] = $objFields->minlength;
-                $elements[$prefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($prefix . $objFields->id, $objFields->label, $objFields->minlength);
+                $arrElements[$strPrefix . $objFields->id]['minlength'] = $objFields->minlength;
+                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
             }
 
             if ($objFields->maxlength)
             {
-                $elements[$prefix . $objFields->id]['maxlength'] = $objFields->maxlength;
-                $elements[$prefix . $objFields->id]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($prefix . $objFields->id, $objFields->label, $objFields->maxlength);
+                $arrElements[$strPrefix . $objFields->id]['maxlength'] = $objFields->maxlength;
+                $arrElements[$strPrefix . $objFields->id]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->maxlength);
             }
 
             if ($objFields->type == 'password')
             {
-                $elements[$prefix . $objFields->id]['minlength'] = 8;
+                $arrElements[$strPrefix . $objFields->id]['minlength'] = 8;
 
-                $elements[$prefix . $objFields->id . '_confirm']['type'] = 'passwordMatch';
+                $arrElements[$strPrefix . $objFields->id . '_confirm']['type'] = 'passwordMatch';
 
-                if ($elements[$prefix . $objFields->id]['mandatory'] == 1)
+                if ($arrElements[$strPrefix . $objFields->id]['mandatory'] == 1)
                 {
-                    $elements[$prefix . $objFields->id . '_confirm']['mandatory'] = 1;
-                    $elements[$prefix . $objFields->id . '_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($prefix . $objFields->id . '_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                    $arrElements[$strPrefix . $objFields->id . '_confirm']['mandatory'] = 1;
+                    $arrElements[$strPrefix . $objFields->id . '_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix . $objFields->id . '_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
                 }
 
-                $elements[$prefix . $objFields->id . '_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($prefix . $objFields->id . '_confirm', 'passwordMatch');
+                $arrElements[$strPrefix . $objFields->id . '_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix . $objFields->id . '_confirm', 'passwordMatch');
+                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
             }
         }
 
@@ -135,7 +136,7 @@ class ModuleFormGenerator extends \Contao\Form
         // creates new object of FileGenerator
         // submits config
         $objJsonGenerator = new JsonFileGenerator();
-        $objJsonGenerator->createJsonFile($elements, 'form_' . $formId);
+        $objJsonGenerator->createJsonFile($arrElements, 'form_' . $formId);
 
         // return compiled parent class
         return $strParentCompile;
