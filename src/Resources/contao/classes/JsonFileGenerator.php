@@ -14,16 +14,17 @@
 namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
-use Contao\Controller;
 use Contao\Date;
 use Contao\Environment;
 use Contao\Input;
+use Contao\File;
+use Contao\Database;
 
 /**
  * Class JsonFileGenerator
  * @package Trilobit\FormvalidationBundle
  */
-class JsonFileGenerator extends Controller
+class JsonFileGenerator
 {
 
     /**
@@ -55,13 +56,13 @@ class JsonFileGenerator extends Controller
         // write validation file
         if (!file_exists(TL_ROOT . '/' . $strValidationFile))
         {
-            $objFile = new \File($strValidationFile);
+            $objFile = new File($strValidationFile);
             $objFile->write($liveValidationValue);
             $objFile->close();
         }
 
         // include JavaScripts
-        if ($this->getBELoginStatus())
+        if (self::getBELoginStatus())
         {
             $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.js';
         }
@@ -323,7 +324,7 @@ class JsonFileGenerator extends Controller
             );
         }
 
-        if ($this->Input->post('FORM_SUBMIT') == $formId)
+        if (Input::post('FORM_SUBMIT') == $formId)
         {
             $this->createSubmittedTag();
         }
@@ -337,19 +338,16 @@ class JsonFileGenerator extends Controller
      */
     public function getBELoginStatus()
     {
-        $this->import('Database');
-        $objInput = Input::getInstance();
-        $objEnvironment = Environment::getInstance();
-
         $strCookie = 'BE_USER_AUTH';
 
-        $hash = sha1(session_id() . (!$GLOBALS['TL_CONFIG']['disableIpCheck'] ? $objEnvironment->ip : '') . $strCookie);
+        $hash = sha1(session_id() . (!$GLOBALS['TL_CONFIG']['disableIpCheck'] ? Environment::get('ip') : '') . $strCookie);
 
         // Validate the cookie hash
-        if ($objInput->cookie($strCookie) == $hash)
+        if (Input::cookie($strCookie) == $hash)
         {
             // Try to find the session
-            $objSession = $this->Database->prepare("SELECT * FROM tl_session WHERE hash=? AND name=?")
+            $objSession = Database::getInstance()
+                ->prepare("SELECT * FROM tl_session WHERE hash=? AND name=?")
                 ->limit(1)
                 ->execute($hash, $strCookie);
 
@@ -357,7 +355,7 @@ class JsonFileGenerator extends Controller
             if (   $objSession->numRows
                 && $objSession->sessionID == session_id()
                 && (   $GLOBALS['TL_CONFIG']['disableIpCheck']
-                    || $objSession->ip == $objEnvironment->ip
+                    || $objSession->ip == Environment::get('ip')
                 )
                 && ($objSession->tstamp + $GLOBALS['TL_CONFIG']['sessionTimeout']) > time())
             {

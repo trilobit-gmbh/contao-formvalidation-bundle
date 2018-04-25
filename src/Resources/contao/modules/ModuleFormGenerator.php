@@ -104,16 +104,20 @@ class ModuleFormGenerator extends \Contao\Form
 
             }
 
-            if ($objFields->minlength)
-            {
-                $arrElements[$strPrefix . $objFields->id]['minlength'] = $objFields->minlength;
-                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-            }
-
             if ($objFields->maxlength)
             {
                 $arrElements[$strPrefix . $objFields->id]['maxlength'] = $objFields->maxlength;
                 $arrElements[$strPrefix . $objFields->id]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->maxlength);
+                //$arrElements[$strPrefix . $objFields->id]['tooShortMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+                //$arrElements[$strPrefix . $objFields->id]['tooLongMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+                //$arrElements[$strPrefix . $objFields->id]['tooLowMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+                //$arrElements[$strPrefix . $objFields->id]['tooHighMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            }
+
+            if ($objFields->minlength)
+            {
+                $arrElements[$strPrefix . $objFields->id]['minlength'] = $objFields->minlength;
+                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
             }
 
             if ($objFields->type == 'password')

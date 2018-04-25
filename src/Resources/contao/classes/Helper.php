@@ -13,14 +13,13 @@
 
 namespace Trilobit\FormvalidationBundle;
 
-use Contao\Controller;
 use Contao\Date;
 
 /**
  * Class Helper
  * @package Trilobit\FormvalidationBundle
  */
-class Helper extends Controller
+class Helper
 {
 
     /**
