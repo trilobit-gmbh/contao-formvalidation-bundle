@@ -73,14 +73,22 @@ class JsonFileGenerator
 
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
 
-        if (!Config::get('livevalidationDisableDefaultCss')
-        )
+        // include validation css
+        if (!Config::get('livevalidationDisableDefaultCss'))
         {
             $GLOBALS['TL_CSS'][] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
         }
 
-        // Include JavaScripts as last JS
-        $GLOBALS['TL_HEAD'][] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
+
+        // include validation json
+        if (!Config::get('livevalidationDisableHeadJs'))
+        {
+            $GLOBALS['TL_HEAD']['f' . $formId] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
+        }
+        else
+        {
+            $GLOBALS['TL_FORMVALIDATION']['FORMS'][$formId] = $this->createJson($formId, $elements);
+        }
     }
 
     /**
