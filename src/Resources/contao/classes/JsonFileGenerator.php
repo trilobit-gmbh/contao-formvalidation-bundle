@@ -133,35 +133,12 @@ class JsonFileGenerator
         $regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)?(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)+?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+@\w[\w_\.-]+\.[a-z]{2,}$/i';
 
         // Load Contao date-regex
-        global $objPage;
-
         $objDate = new Date();
 
-        // Date
-        $strDateFormat = Config::get('dateFormat');
-        if ($objPage->dateFormat)
-        {
-            $strDateFormat = $objPage->dateFormat;
-        }
-        $regexDate  = $objDate->getRegexp($strDateFormat); //$GLOBALS['TL_CONFIG']['dateFormat']
-
-        // Date Time
-        $strDatimFormat = Config::get('datimFormat');
-        if ($objPage->datimFormat)
-        {
-            $strDatimFormat = $objPage->datimFormat;
-        }
-        $regexDatim = $objDate->getRegexp($strDatimFormat); //$GLOBALS['TL_CONFIG']['datimFormat']
-
-        // Time
-        $strTimeFormat = Config::get('timeFormat');
-        if ($objPage->timeFormat)
-        {
-            $strTimeFormat = $objPage->timeFormat;
-        }
-        $regexTime  = $objDate->getRegexp($strTimeFormat); //$GLOBALS['TL_CONFIG']['timeFormat']
-
-        
+        $regexDate  = $objDate->getRegexp(Helper::getDateTimeFormat('dateFormat')); //$GLOBALS['TL_CONFIG']['dateFormat']
+        $regexDatim = $objDate->getRegexp(Helper::getDateTimeFormat('datimFormat')); //$GLOBALS['TL_CONFIG']['datimFormat']
+        $regexTime  = $objDate->getRegexp(Helper::getDateTimeFormat('timeFormat')); //$GLOBALS['TL_CONFIG']['timeFormat']
+       
         // Remove PHP subpattern
         $regexDate  = preg_replace('/\?P\<.\>/', '', $regexDate);
         $regexDatim = preg_replace('/\?P\<.\>/', '', $regexDatim);
