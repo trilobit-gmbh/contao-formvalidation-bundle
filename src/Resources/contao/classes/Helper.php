@@ -14,6 +14,7 @@
 namespace Trilobit\FormvalidationBundle;
 
 use Contao\Date;
+use Contao\Config;
 
 /**
  * Class Helper
@@ -30,7 +31,7 @@ class Helper
     public function getMandatoryMessage($field, $label)
     {
         $message = '';
-        
+
         if ($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory'])
         {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory'];
@@ -45,7 +46,7 @@ class Helper
         }
 
         $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
-        
+
         $message = sprintf($message, $label, $message);
         $message = preg_replace('/""\s/', '', $message);
 
@@ -81,15 +82,15 @@ class Helper
 
             if ($type == 'date')
             {
-               $message = sprintf($message, $objDate->getInputFormat($GLOBALS['TL_CONFIG']['dateFormat']));
+               $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDateFormat()));
             }
             else if ($type == 'datim')
             {
-                $message = sprintf($message, $objDate->getInputFormat($GLOBALS['TL_CONFIG']['datimFormat']));
+                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericTimeFormat()));
             }
             else if ($type == 'time')
             {
-                $message = sprintf($message, $objDate->getInputFormat($GLOBALS['TL_CONFIG']['timeFormat']));
+                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDatimFormat()));
             }
         }
 
@@ -115,7 +116,7 @@ class Helper
         else
         {
             $label   = preg_replace('/&#92;/', '&#92;&#92;', $label);
-            
+
             $message = $GLOBALS['TL_LANG']['ERR']['minlength'];
             $message = sprintf($message, $label, $minlength);
         }
@@ -142,7 +143,7 @@ class Helper
         else
         {
             $label   = preg_replace('/&#92;/', '&#92;&#92;', $label);
-            
+
             $message = $GLOBALS['TL_LANG']['ERR']['maxlength'];
             $message = sprintf($message, $label, $maxlength);
         }

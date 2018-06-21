@@ -46,7 +46,7 @@ class ModuleFormGenerator extends \Contao\Form
 
         // Lade alle Formularfelder der jeweiligen Seite
         $objFields = Database::getInstance()
-            ->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible!=1 ORDER BY sorting")
+            ->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible='' ORDER BY sorting")
             ->execute($formId);
 
         $objValidationHelper = new Helper();

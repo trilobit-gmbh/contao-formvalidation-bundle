@@ -14,7 +14,6 @@
 /**
  * System configuration
  */
-/*
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace
 (
     ';{proxy_legend',
@@ -29,4 +28,3 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['livevalidationDisableDefaultCss'] =
     'inputType' => 'checkbox',
     'eval'      => array('tl_class'=> 'clr w50',)
 );
-*/
