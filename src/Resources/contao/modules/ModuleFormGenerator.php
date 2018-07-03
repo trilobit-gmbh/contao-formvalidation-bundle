@@ -56,7 +56,7 @@ class ModuleFormGenerator extends \Contao\Form
         while($objFields->next())
         {
             if (   $objFields->type == 'submit'
-                || $objFields->type == 'fineUploader'
+                #|| $objFields->type == 'fineUploader'
                 || (   $objFields->type == 'select'
                     && $objFields->multiple == 1
                 )
