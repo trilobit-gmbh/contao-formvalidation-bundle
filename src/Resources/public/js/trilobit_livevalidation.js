@@ -102,6 +102,12 @@ trilobit.configValidation = function()
             {
                 continue;
             }
+            
+            // Hidden Feld?
+            if (document.getElementById(formElement.key).type == 'hidden')
+            {
+                continue;
+            }
 
             trilobit.setCheckRoutine(formCount, formElement);
         }
