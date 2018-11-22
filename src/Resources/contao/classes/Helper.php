@@ -86,11 +86,11 @@ class Helper
             }
             else if ($type == 'datim')
             {
-                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericTimeFormat()));
+                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDatimFormat()));
             }
             else if ($type == 'time')
             {
-                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDatimFormat()));
+                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericTimeFormat()));
             }
         }
 
