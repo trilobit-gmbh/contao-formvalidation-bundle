@@ -1,45 +1,40 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package     Trilobit
- * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
- * @license     LGPL-3.0-or-later
- * @copyright   trilobit GmbH
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
+use Contao\Database;
 use Contao\Date;
 use Contao\Environment;
-use Contao\Input;
 use Contao\File;
-use Contao\Database;
+use Contao\Input;
 
 /**
- * Class JsonFileGenerator
- * @package Trilobit\FormvalidationBundle
+ * Class JsonFileGenerator.
  */
 class JsonFileGenerator
 {
-
     /**
      * @param $elements
      * @param $formId
+     *
      * @throws \Exception
      */
     public function createJsonFile($elements, $formId)
     {
         // prepare validation file content
-        $liveValidationValue = 'var trilobit_liveValidation;' . "\n"
-                             . 'if (!trilobit_liveValidation) { trilobit_liveValidation = new Array(); }' . "\n"
-                             . 'trilobit_liveValidation.push(' . "\n"
-                             . $this->createJson($formId, $elements)
-                             . ');' . "\n"
+        $liveValidationValue = 'var trilobit_liveValidation;'."\n"
+                             .'if (!trilobit_liveValidation) { trilobit_liveValidation = new Array(); }'."\n"
+                             .'trilobit_liveValidation.push('."\n"
+                             .$this->createJson($formId, $elements)
+                             .');'."\n"
                              ;
 
         // get checksum
@@ -47,46 +42,32 @@ class JsonFileGenerator
 
         // prepare path and filename
         $strValidationFile = 'assets/'
-            . 'js/'
-            . 'lv_' . $formId
-            . '_' . $strChecksum
-            . '.js'
+            .'js/'
+            .'lv_'.$formId
+            .'_'.$strChecksum
+            .'.js'
         ;
 
         // write validation file
-        if (!file_exists(TL_ROOT . '/' . $strValidationFile))
-        {
+        if (!file_exists(TL_ROOT.'/'.$strValidationFile)) {
             $objFile = new File($strValidationFile);
             $objFile->write($liveValidationValue);
             $objFile->close();
         }
 
         // include JavaScripts
-        if (self::getBELoginStatus())
-        {
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.js';
-        }
-        else
-        {
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.compressed.js';
-        }
-
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.compressed.js';
         $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
 
         // include validation css
-        if (!Config::get('livevalidationDisableDefaultCss'))
-        {
+        if (!Config::get('livevalidationDisableDefaultCss')) {
             $GLOBALS['TL_CSS'][] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
         }
 
-
         // include validation json
-        if (!Config::get('livevalidationDisableHeadJs'))
-        {
-            $GLOBALS['TL_HEAD']['f' . $formId] = '<script type="text/javascript" src="' . $strValidationFile . '"></script>';
-        }
-        else
-        {
+        if (!Config::get('livevalidationDisableHeadJs')) {
+            $GLOBALS['TL_HEAD']['FORMVALIDATION_'.$formId] = '<script src="'.$strValidationFile.'"></script>';
+        } else {
             $GLOBALS['TL_FORMVALIDATION']['FORMS'][$formId] = $this->createJson($formId, $elements);
         }
     }
@@ -96,132 +77,116 @@ class JsonFileGenerator
      */
     protected function createSubmittedTag()
     {
-        $GLOBALS['TL_HEAD'][] = '<script type="text/javascript">var trilobitFormSubmitted = true;</script>';
+        $GLOBALS['TL_HEAD'][] = '<script>var trilobitFormSubmitted = true;</script>';
     }
 
     /**
      * @param $formId
      * @param $elements
-     * @return string
+     *
      * @throws \Exception
+     *
+     * @return string
      */
     protected function createJson($formId, $elements)
     {
         // exclution for alphanumeric check
-        $alnumExtend = array('#', '&', '(', ')', '/', '>', '<', '=');
+        $alnumExtend = ['#', '&', '(', ')', '/', '>', '<', '='];
 
         // empty value in case of a mandatory select
-        $select = array('');
+        $select = [''];
 
         // Regex-Pattern
         $regexAlpha = '/^[a-z ._-]+$/i';
         $regexAlnum = '/^[a-z0-9 ._-]+$/i';
         $regexPhone = '/^(\+|\()?(\d+[ \+\(\)\/-]*)+$/';
-        $regexUrl   = '/^[a-zA-Z0-9\.\+\/\?#%:,;\{\}\(\)\[\]@&=~_-]*$/';
 
-        //$regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+@\w+([_\.-]*\w+)*\.[a-z]{2,6}$/i';
-
-        //$regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)'
-        //            .  '?(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)+'
-        //            .  '?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+'
-        //            .  '@'
-        //            .  '\w+([_\.-]*\w+)*\.[a-z]{2,6}$/i'
-        //            ;
+        // Jira CONTAO-478
+        // 2019-02-19
+        $regexUrl = '/^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/';
 
         // Jira HWP-41
-        // 2014-11-18, 15:40
+        // 2014-11-18
         $regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)?(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)+?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+@\w[\w_\.-]+\.[a-z]{2,}$/i';
 
         // Load Contao date-regex
         $objDate = new \Date();
 
-        $regexDate  = $objDate->getRegexp(Date::getNumericDateFormat()); //$GLOBALS['TL_CONFIG']['dateFormat']
-        $regexDatim = $objDate->getRegexp(Date::getNumericDatimFormat()); //$GLOBALS['TL_CONFIG']['datimFormat']
-        $regexTime  = $objDate->getRegexp(Date::getNumericTimeFormat()); //$GLOBALS['TL_CONFIG']['timeFormat']
-       
+        $regexDate = $objDate->getRegexp(Date::getNumericDateFormat());
+        $regexDatim = $objDate->getRegexp(Date::getNumericDatimFormat());
+        $regexTime = $objDate->getRegexp(Date::getNumericTimeFormat());
+
         // Remove PHP subpattern
-        $regexDate  = preg_replace('/\?P\<.\>/', '', $regexDate);
+        $regexDate = preg_replace('/\?P\<.\>/', '', $regexDate);
         $regexDatim = preg_replace('/\?P\<.\>/', '', $regexDatim);
-        $regexTime  = preg_replace('/\?P\<.\>/', '', $regexTime);
+        $regexTime = preg_replace('/\?P\<.\>/', '', $regexTime);
 
         // add delimiter
-        $regexDate  = '/^' . $regexDate . '$/';
-        $regexDatim = '/^' . $regexDatim . '$/';
-        $regexTime  = '/^' . $regexTime . '$/';
+        $regexDate = '/^'.$regexDate.'$/';
+        $regexDatim = '/^'.$regexDatim.'$/';
+        $regexTime = '/^'.$regexTime.'$/';
 
-        $arrValidation = array();
+        $arrValidation = [];
 
-        foreach ($elements as $elementKey => $elementValue)
-        {
-            $currentField = array();
+        foreach ($elements as $elementKey => $elementValue) {
+            $currentField = [];
 
-            if (   $elementValue['mandatory']
-                && $elementValue['mandatory'] == 1
-                && $elementValue['type'] != 'checkbox'
-                && $elementValue['type'] != 'radio'
-            )
-            {
+            if ($elementValue['mandatory']
+                && 1 === $elementValue['mandatory']
+                && 'checkbox' !== $elementValue['type']
+                && 'radio' !== $elementValue['type']
+            ) {
                 $currentField[0]['validationType'] = 'Validate.Presence';
                 $currentField[0]['validationAttributes']['failureMessage'] = $elementValue['mandatoryMessage'];
             }
 
-            if (   $elementValue['type'] == 'checkbox'
-                || $elementValue['type'] == 'radio'
-            )
-            {
-                if (   $elementValue['mandatory']
-                    && $elementValue['mandatory'] == 1
-                )
-                {
+            if ('checkbox' === $elementValue['type']
+                || 'radio' === $elementValue['type']
+            ) {
+                if ($elementValue['mandatory']
+                    && 1 === $elementValue['mandatory']
+                ) {
                     $currentField[1]['validationType'] = $elementValue['type'];
                     $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['mandatoryMessage'];
                     $currentField[1]['validationAttributes']['mandatory'] = 1;
                 }
-            }
-            else if (   $elementValue['type'] == 'digit'
-                     || $elementValue['type'] == 'captcha'
-            )
-            {
+            } elseif ('digit' === $elementValue['type']
+                     || 'captcha' === $elementValue['type']
+            ) {
                 $currentField[1]['validationAttributes']['notANumberMessage'] = $elementValue['failureMessage'];
-            }
-            else if (   $elementValue['type'] == 'alpha'
-                     || $elementValue['type'] == 'alnum'
-                     || $elementValue['type'] == 'date'
-                     || $elementValue['type'] == 'datim'
-                     || $elementValue['type'] == 'time'
-                     || $elementValue['type'] == 'phone'
-                     || $elementValue['type'] == 'email'
-                     || $elementValue['type'] == 'url'
-                     || $elementValue['type'] == 'extnd'
-                     || $elementValue['type'] == 'passwordMatch'
-            )
-            {
+            } elseif ('alpha' === $elementValue['type']
+                     || 'alnum' === $elementValue['type']
+                     || 'date' === $elementValue['type']
+                     || 'datim' === $elementValue['type']
+                     || 'time' === $elementValue['type']
+                     || 'phone' === $elementValue['type']
+                     || 'email' === $elementValue['type']
+                     || 'url' === $elementValue['type']
+                     || 'extnd' === $elementValue['type']
+                     || 'passwordMatch' === $elementValue['type']
+            ) {
                 $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
             }
 
             // set different config for each formcheck-type
-            switch( $elementValue['type'] )
-            {
+            switch ($elementValue['type']) {
                 // Fieldtype Digits
                 // only digits allowed
                 case 'digit':
                     $currentField[1]['validationType'] = 'Validate.Numericality';
                     break;
-
                 // Fieldtype Alphabetic
                 // only alphabetic chars allowed
                 case 'alpha':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexAlpha;
                     break;
-
                 // Fieldtype Alphanumeric
                 // digits and alphabetic chars
                 case 'alnum':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexAlnum;
                     break;
-
                 // Fieldtype Date
                 // only a valid date is allowed
                 // Format is set up in the backend settings
@@ -229,7 +194,6 @@ class JsonFileGenerator
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexDate;
                     break;
-
                 // Fieldtype Datim
                 // Only a valid date and time are allowed
                 // Format is set up in the backend settings
@@ -237,7 +201,6 @@ class JsonFileGenerator
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexDatim;
                     break;
-
                 // Fieldtype Time
                 // Only a valid time is allowed
                 // Format is set up in the backend settings
@@ -245,26 +208,23 @@ class JsonFileGenerator
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexTime;
                     break;
-
                 // Fieldtype phone
                 // Only a valid phonenumber
                 case 'phone':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexPhone;
                     break;
-
                 // Fieldtype Email
                 // Needs a valid Email
                 case 'email':
                     $currentField[1]['validationType'] = 'Validate.Email';
                     break;
-
                 // Fieldtype Email
                 // Needs a valid Email
-                #case 'email':
-                #    $currentField[1]['validationType'] = 'Validate.Format';
-                #    $currentField[1]['validationAttributes']['pattern'] = $regexEmail;
-                #    break;
+                //case 'email':
+                //    $currentField[1]['validationType'] = 'Validate.Format';
+                //    $currentField[1]['validationAttributes']['pattern'] = $regexEmail;
+                //    break;
 
                 // Feldtyp URL
                 // Only a valid URL is allowed
@@ -272,7 +232,6 @@ class JsonFileGenerator
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexUrl;
                     break;
-
                 // Feldtyp Extnd
                 // All Chars are allowed.
                 // Exclusion: # & ( ) / > = <
@@ -281,25 +240,20 @@ class JsonFileGenerator
                     $currentField[1]['validationAttributes']['within'] = $alnumExtend;
                     $currentField[1]['validationAttributes']['partialMatch'] = true;
                     break;
-
                 case 'passwordMatch':
-                    if (preg_match("/(.*?)\_confirm/", $elementKey, $treffer))
-                    {
+                    if (preg_match("/(.*?)\_confirm/", $elementKey, $treffer)) {
                         $currentField[1]['validationType'] = 'Validate.Confirmation';
                         $currentField[1]['validationAttributes']['match'] = $treffer[1];
                     }
                     break;
-
                 case 'captcha':
                     $currentField[1]['validationType'] = 'Validate.Numericality';
                     break;
-
                 case 'checkbox':
                     $currentField[1]['validationType'] = 'trilobitCheckboxValidation';
                     $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
                     break;
-
                 case 'radio':
                     $currentField[1]['validationType'] = 'trilobitRadioValidation';
                     $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
@@ -307,71 +261,33 @@ class JsonFileGenerator
                     break;
             }
 
-            if ($elementValue['minlength'])
-            {
+            if ($elementValue['minlength']) {
                 $currentField[2]['validationType'] = 'Validate.Length';
                 $currentField[2]['validationAttributes']['minimum'] = $elementValue['minlength'];
                 $currentField[2]['validationAttributes']['tooShortMessage'] = $elementValue['minlengthMessage'];
             }
 
             // in case of a maxlength
-            if ($elementValue['maxlength'])
-            {
+            if ($elementValue['maxlength']) {
                 $currentField[2]['validationType'] = 'Validate.Length';
                 $currentField[2]['validationAttributes']['maximum'] = $elementValue['maxlength'];
-                $currentField[2]['validationAttributes']['tooShortMessage'] = $elementValue['maxlengthMessage'];
+                $currentField[2]['validationAttributes']['tooLongMessage'] = $elementValue['maxlengthMessage'];
             }
-
 
             // add current field to validation config
             //$arrValidation[$elementKey]['validations'] = $currentField;
 
-            $arrValidation[] = array
-            (
-                'key'         => $elementKey,
+            $arrValidation[] = [
+                'key' => $elementKey,
                 'validations' => $currentField,
-            );
+            ];
         }
 
-        if (Input::post('FORM_SUBMIT') == $formId)
-        {
+        if (Input::post('FORM_SUBMIT') === $formId) {
             $this->createSubmittedTag();
         }
 
         // Returns strin in JSON format
         return html_entity_decode(json_encode($arrValidation));
-    }
-
-    /**
-     * @return bool
-     */
-    public function getBELoginStatus()
-    {
-        $strCookie = 'BE_USER_AUTH';
-
-        $hash = sha1(session_id() . (!$GLOBALS['TL_CONFIG']['disableIpCheck'] ? Environment::get('ip') : '') . $strCookie);
-
-        // Validate the cookie hash
-        if (Input::cookie($strCookie) == $hash)
-        {
-            // Try to find the session
-            $objSession = Database::getInstance()
-                ->prepare("SELECT * FROM tl_session WHERE hash=? AND name=?")
-                ->limit(1)
-                ->execute($hash, $strCookie);
-
-            // Validate the session ID and timeout
-            if (   $objSession->numRows
-                && $objSession->sessionID == session_id()
-                && (   $GLOBALS['TL_CONFIG']['disableIpCheck']
-                    || $objSession->ip == Environment::get('ip')
-                )
-                && ($objSession->tstamp + $GLOBALS['TL_CONFIG']['sessionTimeout']) > time())
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

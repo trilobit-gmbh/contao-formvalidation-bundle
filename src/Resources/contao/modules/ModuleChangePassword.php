@@ -12,9 +12,9 @@ namespace Trilobit\FormvalidationBundle;
 use Config;
 
 /**
- * Class ModuleCloseAccount.
+ * Class ModulePassword.
  */
-class ModuleCloseAccount extends \Contao\ModuleCloseAccount
+class ModuleChangePassword extends \Contao\ModuleChangePassword
 {
     /**
      * @return string
@@ -34,16 +34,25 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
 
         $elements = [];
 
+        $elements['ctrl_oldpassword']['type'] = '';
+        $elements['ctrl_oldpassword']['mandatory'] = 1;
+        $elements['ctrl_oldpassword']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['oldPassword']);
+
         $elements['ctrl_password']['type'] = '';
         $elements['ctrl_password']['mandatory'] = 1;
-        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
+        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword']);
 
         $minPasswordLength = Config::get('minPasswordLength');
         $elements['ctrl_password']['minlength'] = $minPasswordLength;
         $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
 
+        $elements['ctrl_password_confirm']['type'] = 'passwordMatch';
+        $elements['ctrl_password_confirm']['mandatory'] = 1;
+        $elements['ctrl_password_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+        $elements['ctrl_password_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_password_confirm', 'passwordMatch');
+
         $fileGenerator = new JsonFileGenerator();
-        $fileGenerator->createJsonFile($elements, 'tl_close_account_'.$formId);
+        $fileGenerator->createJsonFile($elements, 'tl_password_'.$formId);
 
         return $strParentCompile;
     }

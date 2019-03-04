@@ -10,9 +10,9 @@
 namespace Trilobit\FormvalidationBundle;
 
 /**
- * Class ModuleComments.
+ * Class ContentComments.
  */
-class ModuleComments extends \Contao\ModuleComments
+class ContentComments extends \Contao\ContentComments
 {
     /**
      * @return string
@@ -20,17 +20,13 @@ class ModuleComments extends \Contao\ModuleComments
     public function generate()
     {
         return parent::generate();
-
     }
 
     protected function compile()
     {
-        /** @var PageModel $objPage */
-        global $objPage;
-
         $strParentCompile = parent::compile();
 
-        $formId = $objPage->id;
+        $formId = $this->id;
 
         $objValidationHelper = new Helper();
 

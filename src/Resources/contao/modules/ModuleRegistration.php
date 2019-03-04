@@ -10,9 +10,9 @@
 namespace Trilobit\FormvalidationBundle;
 
 /**
- * Class ModulePersonalData.
+ * Class ModuleRegistration.
  */
-class ModulePersonalData extends \Contao\ModulePersonalData
+class ModuleRegistration extends \Contao\ModuleRegistration
 {
     /**
      * @return string
@@ -48,7 +48,9 @@ class ModulePersonalData extends \Contao\ModulePersonalData
                     ) {
                         $this->import('Database');
 
-                        $objSession = $this->Database->prepare('SELECT * FROM tl_module WHERE id=?')->limit(1)->execute($formId);
+                        $objSession = $this->Database->prepare('SELECT * FROM tl_module WHERE id=?')
+                            ->limit(1)
+                            ->execute($formId);
 
                         while ($objSession->next()) {
                             if ('groups' === $field) {
@@ -76,12 +78,11 @@ class ModulePersonalData extends \Contao\ModulePersonalData
                 if (version_compare(
                         \Contao\System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
                         '4.6.0'
-                    ) >= 0
+                   ) >= 0
                 ) {
                     // [Core] Append the module ID to the form field IDs to prevent duplicate IDs (see #1493), 25 Jun 2018
                     $fieldId .= '_'.$formId;
                 }
-
 
                 if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp']) {
                     $elements[$fieldId]['type'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp'];
@@ -117,16 +118,23 @@ class ModulePersonalData extends \Contao\ModulePersonalData
         }
 
         if ('1' !== $this->disableCaptcha) {
-            $elements['ctrl_registration']['type'] = 'captcha';
-            $elements['ctrl_registration']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_registration', 'digit');
-            $elements['ctrl_registration']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_registration', $GLOBALS['TL_LANG']['MSC']['securityQuestion']);
-            $elements['ctrl_registration']['mandatory'] = 1;
+            $maxCaptchaLength = 2;
+
+            $fieldId = 'ctrl_registration';
+
+            $elements[$fieldId]['type'] = 'digit';
+            $elements[$fieldId]['mandatory'] = 1;
+            $elements[$fieldId]['mandatoryMessage'] = ' ';
+            $elements[$fieldId]['failureMessage'] = $objValidationHelper->getFailureMessage($fieldId, 'digit');
+            $elements[$fieldId]['maxlength'] = $maxCaptchaLength;
+            $elements[$fieldId]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($fieldId, $GLOBALS['TL_LANG']['MSC']['securityQuestion'], $maxCaptchaLength);
+            $elements[$fieldId]['tooLongMessage'] = $objValidationHelper->getMaxlengthMessage($fieldId, $GLOBALS['TL_LANG']['MSC']['securityQuestion'], $maxCaptchaLength);
         }
 
         // creates new object of FileGenerator
         // submits config
         $fileGenerator = new JsonFileGenerator();
-        $fileGenerator->createJsonFile($elements, 'tl_personal_data_'.$formId);
+        $fileGenerator->createJsonFile($elements, 'tl_registration_'.$formId);
 
         return $strParentCompile;
     }

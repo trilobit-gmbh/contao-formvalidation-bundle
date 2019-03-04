@@ -1,25 +1,21 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package     Trilobit
- * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
- * @license     LGPL-3.0-or-later
- * @copyright   trilobit GmbH
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
 
+use Config;
+
 /**
- * Class ModulePassword
- * @package Trilobit\FormvalidationBundle
+ * Class ModulePassword.
  */
 class ModulePassword extends \Contao\ModulePassword
 {
-
     /**
      * @return string
      */
@@ -28,16 +24,15 @@ class ModulePassword extends \Contao\ModulePassword
         return parent::generate();
     }
 
-    /**
-     *
-     */
     protected function compile()
     {
         $strParentCompile = parent::compile();
 
-        $elements = array();
+        $formId = \strlen($this->formID) ? $this->formID : $this->id;
 
         $objValidationHelper = new Helper();
+
+        $elements = [];
 
         $elements['ctrl_email']['type'] = 'email';
         $elements['ctrl_email']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_email', 'email');
@@ -57,13 +52,17 @@ class ModulePassword extends \Contao\ModulePassword
         $elements['ctrl_password']['mandatory'] = 1;
         $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
 
+        $minPasswordLength = Config::get('minPasswordLength');
+        $elements['ctrl_password']['minlength'] = $minPasswordLength;
+        $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
+
         $elements['ctrl_password_confirm']['type'] = 'passwordMatch';
         $elements['ctrl_password_confirm']['mandatory'] = 1;
         $elements['ctrl_password_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
         $elements['ctrl_password_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_password_confirm', 'passwordMatch');
 
         $fileGenerator = new JsonFileGenerator();
-        $fileGenerator->createJsonFile($elements, 'tl_lost_password');
+        $fileGenerator->createJsonFile($elements, 'tl_password_'.$formId);
 
         return $strParentCompile;
     }

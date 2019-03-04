@@ -1,25 +1,19 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package     Trilobit
- * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
- * @license     LGPL-3.0-or-later
- * @copyright   trilobit GmbH
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
 
 /**
- * Class ModuleLogin
- * @package Trilobit\FormvalidationBundle
+ * Class ModuleLogin.
  */
 class ModuleLogin extends \Contao\ModuleLogin
 {
-
     /**
      * @return string
      */
@@ -28,16 +22,15 @@ class ModuleLogin extends \Contao\ModuleLogin
         return parent::generate();
     }
 
-    /**
-     *
-     */
     protected function compile()
     {
         $strParentCompile = parent::compile();
 
-        $elements = array();
+        $formId = \strlen($this->formID) ? $this->formID : $this->id;
 
         $objValidationHelper = new Helper();
+
+        $elements = [];
 
         $elements['username']['type'] = '';
         $elements['username']['mandatory'] = 1;
@@ -48,7 +41,7 @@ class ModuleLogin extends \Contao\ModuleLogin
         $elements['password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
 
         $fileGenerator = new JsonFileGenerator();
-        $fileGenerator->createJsonFile($elements, 'tl_login');
+        $fileGenerator->createJsonFile($elements, 'tl_login_'.$formId);
 
         return $strParentCompile;
     }

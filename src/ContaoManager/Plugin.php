@@ -1,20 +1,16 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package     Trilobit
- * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
- * @license     LGPL-3.0-or-later
- * @copyright   trilobit GmbH
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle\ContaoManager;
 
-use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
+use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 
 /**
@@ -29,7 +25,7 @@ class Plugin implements BundlePluginInterface
     {
         return [
             BundleConfig::create('Trilobit\FormvalidationBundle\TrilobitFormvalidationBundle')
-                ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle']),
+                ->setLoadAfter([ContaoCoreBundle::class, 'comments']),
         ];
     }
 }

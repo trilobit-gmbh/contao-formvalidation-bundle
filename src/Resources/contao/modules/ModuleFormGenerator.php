@@ -1,25 +1,19 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2014 Leo Feyer
- *
- * @package     Trilobit
- * @author      trilobit GmbH <https://github.com/trilobit-gmbh>
- * @license     LGPL-3.0-or-later
- * @copyright   trilobit GmbH
+/*
+ * @copyright  trilobit GmbH
+ * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
+ * @license    LGPL-3.0-or-later
+ * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
 
-use Contao\Database;
-use Contao\StringUtil;
 use Contao\Config;
+use Contao\Database;
 
 /**
- * Class ModuleFormGenerator
- * @package Trilobit\FormvalidationBundle
+ * Class ModuleFormGenerator.
  */
 class ModuleFormGenerator extends \Contao\Form
 {
@@ -31,120 +25,110 @@ class ModuleFormGenerator extends \Contao\Form
         return parent::generate();
     }
 
-    /**
-     * @return mixed
-     */
     protected function compile()
     {
-        // compiles parent class, so all variables are set
         $strParentCompile = parent::compile();
+
+        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+
+        $elements = [];
 
         $this->import('Database');
 
-        // getting formId
-        $formId = strlen($this->formID) ? $this->formID : $this->id;
-
-        // Lade alle Formularfelder der jeweiligen Seite
         $objFields = Database::getInstance()
             ->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible='' ORDER BY sorting")
             ->execute($formId);
 
         $objValidationHelper = new Helper();
 
-        $arrElements = array();
-
-        while($objFields->next())
-        {
-            if (   $objFields->type == 'submit'
-                #|| $objFields->type == 'fineUploader'
-                || (   $objFields->type == 'select'
-                    && $objFields->multiple == 1
+        while ($objFields->next()) {
+            if ('submit' === $objFields->type
+                //|| $objFields->type == 'fineUploader'
+                || ('select' === $objFields->type
+                    && 1 === $objFields->multiple
                 )
-            )
-            {
+            ) {
                 continue;
             }
 
             $strPrefix = '';
 
-            if (   $objFields->type == 'checkbox'
-                || $objFields->type == 'radio'
-            )
-            {
-                $arrElements[$objFields->id]['type'] = $objFields->type;
-                $arrElements[$objFields->id]['name'] = $objFields->name;
+            if ('checkbox' === $objFields->type
+                || 'radio' === $objFields->type
+            ) {
+                $elements[$objFields->id]['type'] = $objFields->type;
+                $elements[$objFields->id]['name'] = $objFields->name;
 
-                foreach (unserialize($objFields->options) as $key => $value)
-                {
-                    $arrElements[$objFields->id]['elements'][$key] = $key;
+                foreach (deserialize($objFields->options, true) as $key => $value) {
+                    $elements[$objFields->id]['elements'][$key] = $key;
                 }
-            }
-            else
-            {
-                if (   $objFields->type == 'select'
-                    || $objFields->type == 'upload'
-                )
-                {
+            } else {
+                if ('select' === $objFields->type
+                    || 'upload' === $objFields->type
+                ) {
                     $objFields->rgxp = '';
                 }
 
                 $strPrefix = 'ctrl_';
-                $arrElements[$strPrefix . $objFields->id]['type'] = '';
+                $elements[$strPrefix.$objFields->id]['type'] = '';
 
-                if ($objFields->rgxp != '')
-                {
-                    $arrElements[$strPrefix . $objFields->id]['type'] = $objFields->rgxp;
-                    $arrElements[$strPrefix . $objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix . $objFields->id, $objFields->rgxp);
+                if ('' !== $objFields->rgxp) {
+                    $elements[$strPrefix.$objFields->id]['type'] = $objFields->rgxp;
+                    $elements[$strPrefix.$objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id, $objFields->rgxp);
                 }
             }
 
-            if ($objFields->mandatory)
-            {
-                $arrElements[$strPrefix . $objFields->id]['mandatory'] = 1;
-                $arrElements[$strPrefix . $objFields->id]['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix . $objFields->id, $objFields->label);
-
+            if ($objFields->mandatory) {
+                $elements[$strPrefix.$objFields->id]['mandatory'] = 1;
+                $elements[$strPrefix.$objFields->id]['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix.$objFields->id, $objFields->label);
             }
 
-            if ($objFields->maxlength)
-            {
-                $arrElements[$strPrefix . $objFields->id]['maxlength'] = $objFields->maxlength;
-                $arrElements[$strPrefix . $objFields->id]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->maxlength);
-                //$arrElements[$strPrefix . $objFields->id]['tooShortMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-                //$arrElements[$strPrefix . $objFields->id]['tooLongMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-                //$arrElements[$strPrefix . $objFields->id]['tooLowMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-                //$arrElements[$strPrefix . $objFields->id]['tooHighMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            if ('captcha' === $objFields->type) {
+                $objFields->maxlength = 2;
+
+                $elements[$strPrefix.$objFields->id]['type'] = 'digit';
+                $elements[$strPrefix.$objFields->id]['mandatory'] = 1;
+                $elements[$strPrefix.$objFields->id]['mandatoryMessage'] = ' ';
+                $elements[$strPrefix.$objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id, 'digit');
             }
 
-            if ($objFields->minlength)
-            {
-                $arrElements[$strPrefix . $objFields->id]['minlength'] = $objFields->minlength;
-                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-            }
+            if ('password' === $objFields->type) {
+                $minPasswordLength = Config::get('minPasswordLength');
 
-            if ($objFields->type == 'password')
-            {
-                $intMinPasswordLength = Config::get('minPasswordLength');
-
-                $arrElements[$strPrefix . $objFields->id]['minlength'] = $intMinPasswordLength;
-
-                $arrElements[$strPrefix . $objFields->id . '_confirm']['type'] = 'passwordMatch';
-
-                if ($arrElements[$strPrefix . $objFields->id]['mandatory'] == 1)
-                {
-                    $arrElements[$strPrefix . $objFields->id . '_confirm']['mandatory'] = 1;
-                    $arrElements[$strPrefix . $objFields->id . '_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix . $objFields->id . '_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                if ($objFields->minlength || $objFields->minlength < $minPasswordLength) {
+                    $objFields->minlength = $minPasswordLength;
                 }
 
-                $arrElements[$strPrefix . $objFields->id . '_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix . $objFields->id . '_confirm', 'passwordMatch');
-                $arrElements[$strPrefix . $objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $intMinPasswordLength);
+                $elements[$strPrefix.$objFields->id.'_confirm']['type'] = 'passwordMatch';
+
+                if (1 === $elements[$strPrefix.$objFields->id]['mandatory']) {
+                    $elements[$strPrefix.$objFields->id.'_confirm']['mandatory'] = 1;
+                    $elements[$strPrefix.$objFields->id.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix.$objFields->id.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                }
+
+                $elements[$strPrefix.$objFields->id.'_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id.'_confirm', 'passwordMatch');
             }
+
+            if ($objFields->maxlength) {
+                $elements[$strPrefix.$objFields->id]['maxlength'] = $objFields->maxlength;
+                $elements[$strPrefix.$objFields->id]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($strPrefix.$objFields->id, $objFields->label, $objFields->maxlength);
+                $elements[$strPrefix.$objFields->id]['tooLongMessage'] = $objValidationHelper->getMaxlengthMessage($strPrefix.$objFields->id, $objFields->label, $objFields->maxlength);
+            }
+
+            if ($objFields->minlength) {
+                $elements[$strPrefix.$objFields->id]['minlength'] = $objFields->minlength;
+                $elements[$strPrefix.$objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix.$objFields->id, $objFields->label, $objFields->minlength);
+                //$elements[$strPrefix . $objFields->id]['tooShortMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            }
+
+            //$elements[$strPrefix . $objFields->id]['tooLowMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            //$elements[$strPrefix . $objFields->id]['tooHighMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
         }
-
 
         // creates new object of FileGenerator
         // submits config
         $objJsonGenerator = new JsonFileGenerator();
-        $objJsonGenerator->createJsonFile($arrElements, 'form_' . $formId);
+        $objJsonGenerator->createJsonFile($elements, 'tl_form_'.$formId);
 
         // return compiled parent class
         return $strParentCompile;
