@@ -39,4 +39,12 @@ Screenshot
 ------------
 
 ![Registration](docs/images/formvalidation_registration.png?raw=true "trilobitFormvalidationBundle")
+
 Registration / Registrierung
+
+
+Compatibility
+-------------
+
+- Contao version ~4.4
+- Contao version ~4.9
