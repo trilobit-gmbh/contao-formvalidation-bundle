@@ -91,14 +91,17 @@ class JsonFileGenerator
     protected function createJson($formId, $elements)
     {
         // exclution for alphanumeric check
-        $alnumExtend = ['#', '&', '(', ')', '/', '>', '<', '='];
+        $alnumExtend = ['#', '&', '(', ')', '/', '>', '<', '=']; // '/[#<>()\\\\=]/'
 
         // empty value in case of a mandatory select
         $select = [''];
 
         // Regex-Pattern
-        $regexAlpha = '/^[a-z ._-äöü]+$/i';
-        $regexAlnum = '/^[a-z0-9 ._-äöü]+$/i';
+        #$regexAlpha = '/^[a-z äöü]+$/i';
+        $regexAlpha = '/^[\p{L} .-]+$/u'; // Core; see: vendor/contao/core-bundle/src/Resources/contao/library/Contao/Validator.php
+        #$regexAlnum = '/^[a-z0-9 ._-äöü]+$/i';
+        $regexAlnum = '/^[\w\p{L} .-]+$/u'; // Core; see: vendor/contao/core-bundle/src/Resources/contao/library/Contao/Validator.php
+
         $regexPhone = '/^(\+|\()?(\d+[ \+\(\)\/-]*)+$/';
 
         // Jira CONTAO-478
