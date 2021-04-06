@@ -97,8 +97,8 @@ class JsonFileGenerator
         $select = [''];
 
         // Regex-Pattern
-        $regexAlpha = '/^[a-z ._-]+$/i';
-        $regexAlnum = '/^[a-z0-9 ._-]+$/i';
+        $regexAlpha = '/^[a-z ._-äöü]+$/i';
+        $regexAlnum = '/^[a-z0-9 ._-äöü]+$/i';
         $regexPhone = '/^(\+|\()?(\d+[ \+\(\)\/-]*)+$/';
 
         // Jira CONTAO-478
