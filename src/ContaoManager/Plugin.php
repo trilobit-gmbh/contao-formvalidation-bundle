@@ -9,14 +9,13 @@
 
 namespace Trilobit\FormvalidationBundle\ContaoManager;
 
+use Contao\CommentsBundle\ContaoCommentsBundle;
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-
-use Trilobit\FormvalidationBundle\TrilobitFormvalidationBundle;
-use Contao\CoreBundle\ContaoCoreBundle;
-use Contao\CommentsBundle\ContaoCommentsBundle;
 use Contao\NewsletterBundle\ContaoNewsletterBundle;
+use Trilobit\FormvalidationBundle\TrilobitFormvalidationBundle;
 
 /**
  * Plugin for the Contao Manager.
