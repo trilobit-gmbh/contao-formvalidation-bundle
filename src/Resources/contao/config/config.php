@@ -7,18 +7,30 @@
  * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
-$GLOBALS['TL_CTE']['includes']['comments'] = 'Trilobit\FormvalidationBundle\ContentComments';
-$GLOBALS['TL_CTE']['includes']['form'] = 'Trilobit\FormvalidationBundle\ModuleFormGenerator';
+use Trilobit\FormvalidationBundle\ContentComments;
+use Trilobit\FormvalidationBundle\ModuleChangePassword;
+use Trilobit\FormvalidationBundle\ModuleCloseAccount;
+use Trilobit\FormvalidationBundle\ModuleComments;
+use Trilobit\FormvalidationBundle\ModuleFormGenerator;
+use Trilobit\FormvalidationBundle\ModuleLogin;
+use Trilobit\FormvalidationBundle\ModuleNewsletterSubscribe;
+use Trilobit\FormvalidationBundle\ModuleNewsletterUnsubscribe;
+use Trilobit\FormvalidationBundle\ModulePassword;
+use Trilobit\FormvalidationBundle\ModulePersonalData;
+use Trilobit\FormvalidationBundle\ModuleRegistration;
 
-$GLOBALS['FE_MOD']['application']['form'] = 'Trilobit\FormvalidationBundle\ModuleFormGenerator';
-$GLOBALS['FE_MOD']['application']['comments'] = 'Trilobit\FormvalidationBundle\ModuleComments';
+$GLOBALS['TL_CTE']['includes']['comments'] = ContentComments::class;
+$GLOBALS['TL_CTE']['includes']['form'] = ModuleFormGenerator::class;
 
-$GLOBALS['FE_MOD']['user']['registration'] = 'Trilobit\FormvalidationBundle\ModuleRegistration';
-$GLOBALS['FE_MOD']['user']['login'] = 'Trilobit\FormvalidationBundle\ModuleLogin';
-$GLOBALS['FE_MOD']['user']['changePassword'] = 'Trilobit\FormvalidationBundle\ModuleChangePassword';
-$GLOBALS['FE_MOD']['user']['lostPassword'] = 'Trilobit\FormvalidationBundle\ModulePassword';
-$GLOBALS['FE_MOD']['user']['closeAccount'] = 'Trilobit\FormvalidationBundle\ModuleCloseAccount';
-$GLOBALS['FE_MOD']['user']['personalData'] = 'Trilobit\FormvalidationBundle\ModulePersonalData';
+$GLOBALS['FE_MOD']['application']['form'] = ModuleFormGenerator::class;
+$GLOBALS['FE_MOD']['application']['comments'] = ModuleComments::class;
 
-$GLOBALS['FE_MOD']['newsletter']['subscribe'] = 'Trilobit\FormvalidationBundle\ModuleNewsletterSubscribe';
-$GLOBALS['FE_MOD']['newsletter']['unsubscribe'] = 'Trilobit\FormvalidationBundle\ModuleNewsletterUnsubscribe';
+$GLOBALS['FE_MOD']['user']['registration'] = ModuleRegistration::class;
+$GLOBALS['FE_MOD']['user']['login'] = ModuleLogin::class;
+$GLOBALS['FE_MOD']['user']['changePassword'] = ModuleChangePassword::class;
+$GLOBALS['FE_MOD']['user']['lostPassword'] = ModulePassword::class;
+$GLOBALS['FE_MOD']['user']['closeAccount'] = ModuleCloseAccount::class;
+$GLOBALS['FE_MOD']['user']['personalData'] = ModulePersonalData::class;
+
+$GLOBALS['FE_MOD']['newsletter']['subscribe'] = ModuleNewsletterSubscribe::class;
+$GLOBALS['FE_MOD']['newsletter']['unsubscribe'] = ModuleNewsletterUnsubscribe::class;

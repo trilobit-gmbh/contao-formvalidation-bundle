@@ -9,7 +9,7 @@
 
 namespace Trilobit\FormvalidationBundle;
 
-use Config;
+use Contao\Config;
 
 /**
  * Class ModuleCloseAccount.
@@ -29,6 +29,7 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
         $strParentCompile = parent::compile();
 
         $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();
 
@@ -36,11 +37,9 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
 
         $elements['ctrl_password']['type'] = '';
         $elements['ctrl_password']['mandatory'] = 1;
-        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
-
-        $minPasswordLength = Config::get('minPasswordLength');
         $elements['ctrl_password']['minlength'] = $minPasswordLength;
-        $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
+        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0]);
+        $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['password'][0], $minPasswordLength);
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_close_account_'.$formId);

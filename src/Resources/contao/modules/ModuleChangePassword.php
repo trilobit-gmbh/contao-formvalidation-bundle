@@ -9,7 +9,7 @@
 
 namespace Trilobit\FormvalidationBundle;
 
-use Config;
+use Contao\Config;
 
 /**
  * Class ModulePassword.
@@ -29,6 +29,7 @@ class ModuleChangePassword extends \Contao\ModuleChangePassword
         $strParentCompile = parent::compile();
 
         $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();
 
@@ -40,15 +41,16 @@ class ModuleChangePassword extends \Contao\ModuleChangePassword
 
         $elements['ctrl_password']['type'] = '';
         $elements['ctrl_password']['mandatory'] = 1;
-        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword']);
-
-        $minPasswordLength = Config::get('minPasswordLength');
         $elements['ctrl_password']['minlength'] = $minPasswordLength;
+        $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword']);
+        $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
         $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
 
         $elements['ctrl_password_confirm']['type'] = 'passwordMatch';
         $elements['ctrl_password_confirm']['mandatory'] = 1;
+        $elements['ctrl_password_confirm']['minlength'] = $minPasswordLength;
         $elements['ctrl_password_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+        $elements['ctrl_password_confirm']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
         $elements['ctrl_password_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage('ctrl_password_confirm', 'passwordMatch');
 
         $fileGenerator = new JsonFileGenerator();

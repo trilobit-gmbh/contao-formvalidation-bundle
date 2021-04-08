@@ -9,6 +9,8 @@
 
 namespace Trilobit\FormvalidationBundle;
 
+use Contao\Config;
+
 /**
  * Class ModuleRegistration.
  */
@@ -70,7 +72,6 @@ class ModuleRegistration extends \Contao\ModuleRegistration
                     }
                 }
             } else {
-
                 // Jira CONTAO-478
                 // 2019-02-19
                 $fieldId = 'ctrl_'.$field;
@@ -109,8 +110,12 @@ class ModuleRegistration extends \Contao\ModuleRegistration
                 }
 
                 if ('password' === $field) {
+                    $minPasswordLength = Config::get('minPasswordLength');
+                    $elements[$fieldId]['minlength'] = $minPasswordLength;
+
                     $elements[$fieldId.'_confirm']['type'] = 'passwordMatch';
                     $elements[$fieldId.'_confirm']['mandatory'] = 1;
+                    $elements[$fieldId.'_confirm']['minlength'] = $minPasswordLength;
                     $elements[$fieldId.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($fieldId.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
                     $elements[$fieldId.'_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($fieldId.'_confirm', 'passwordMatch');
                 }

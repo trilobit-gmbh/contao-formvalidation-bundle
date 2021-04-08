@@ -9,6 +9,9 @@
 
 namespace Trilobit\FormvalidationBundle;
 
+use Contao\Config;
+use Contao\System;
+
 /**
  * Class ModulePersonalData.
  */
@@ -27,6 +30,7 @@ class ModulePersonalData extends \Contao\ModulePersonalData
         $strParentCompile = parent::compile();
 
         $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();
 
@@ -68,20 +72,18 @@ class ModulePersonalData extends \Contao\ModulePersonalData
                     }
                 }
             } else {
-
                 // Jira CONTAO-478
                 // 2019-02-19
                 $fieldId = 'ctrl_'.$field;
 
                 if (version_compare(
-                        \Contao\System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
+                        System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
                         '4.6.0'
                     ) >= 0
                 ) {
                     // [Core] Append the module ID to the form field IDs to prevent duplicate IDs (see #1493), 25 Jun 2018
                     $fieldId .= '_'.$formId;
                 }
-
 
                 if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp']) {
                     $elements[$fieldId]['type'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp'];
@@ -108,9 +110,14 @@ class ModulePersonalData extends \Contao\ModulePersonalData
                 }
 
                 if ('password' === $field) {
+                    $elements[$fieldId]['minlength'] = $minPasswordLength;
+                    $elements[$fieldId]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
+
                     $elements[$fieldId.'_confirm']['type'] = 'passwordMatch';
                     $elements[$fieldId.'_confirm']['mandatory'] = 1;
+                    $elements[$fieldId.'_confirm']['minlength'] = $minPasswordLength;
                     $elements[$fieldId.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($fieldId.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                    $elements[$fieldId.'_confirm']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
                     $elements[$fieldId.'_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($fieldId.'_confirm', 'passwordMatch');
                 }
             }

@@ -10,9 +10,7 @@
 namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
-use Contao\Database;
 use Contao\Date;
-use Contao\Environment;
 use Contao\File;
 use Contao\Input;
 
@@ -72,9 +70,6 @@ class JsonFileGenerator
         }
     }
 
-    /**
-     *
-     */
     protected function createSubmittedTag()
     {
         $GLOBALS['TL_HEAD'][] = '<script>var trilobitFormSubmitted = true;</script>';

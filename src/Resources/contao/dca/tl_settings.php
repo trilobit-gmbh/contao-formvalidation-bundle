@@ -7,7 +7,7 @@
  * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
-/**
+/*
  * System configuration.
  */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
