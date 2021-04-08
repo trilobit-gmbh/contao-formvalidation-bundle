@@ -97,8 +97,9 @@ class JsonFileGenerator
         $select = [''];
 
         // Regex-Pattern
-        $regexAlpha = '/^[a-z ._-]+$/i';
-        $regexAlnum = '/^[a-z0-9 ._-]+$/i';
+        $regexAlpha = '/^[\p{L} .-]+$/u'; // Core; see: vendor/contao/core-bundle/src/Resources/contao/library/Contao/Validator.php
+        $regexAlnum = '/^[\w\p{L} .-]+$/u'; // Core; see: vendor/contao/core-bundle/src/Resources/contao/library/Contao/Validator.php
+
         $regexPhone = '/^(\+|\()?(\d+[ \+\(\)\/-]*)+$/';
 
         // Jira CONTAO-478
