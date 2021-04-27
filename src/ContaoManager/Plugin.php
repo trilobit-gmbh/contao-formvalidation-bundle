@@ -29,7 +29,13 @@ class Plugin implements BundlePluginInterface
     {
         return [
             BundleConfig::create(TrilobitFormvalidationBundle::class)
-                ->setLoadAfter([ContaoCoreBundle::class, ContaoCommentsBundle::class, ContaoNewsletterBundle::class]),
+                ->setLoadAfter([
+                    ContaoCoreBundle::class,
+                    ContaoCommentsBundle::class,
+                    ContaoNewsletterBundle::class,
+                    'notification_center',
+                ]),
+
         ];
     }
 }
