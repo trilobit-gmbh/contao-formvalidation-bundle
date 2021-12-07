@@ -35,7 +35,6 @@ class Plugin implements BundlePluginInterface
                     ContaoNewsletterBundle::class,
                     'notification_center',
                 ]),
-
         ];
     }
 }
