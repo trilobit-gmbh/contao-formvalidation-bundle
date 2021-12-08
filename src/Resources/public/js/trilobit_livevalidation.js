@@ -1,5 +1,7 @@
 var trilobit;
-if (!trilobit) { trilobit = {}; }
+if (!trilobit) {
+    trilobit = {};
+}
 
 trilobit.allCheckboxRadio = {};
 trilobit.allFormFields = {};
@@ -7,49 +9,40 @@ trilobit.allFormFields = {};
 /*
  * Liefert alle ID's der Formulare
  */
-trilobit.getAllForms = function(trilobit_liveValidation)
-{
-    var allForms, formCount, formElementCount, formElement, firstRun, id;
+trilobit.getAllForms = function (trilobit_liveValidation) {
+    let allForms, formCount, formElementCount, formElement, firstRun, id;
 
-    allForms = new Array();
+    allForms = [];
 
-    for (formCount=0; formCount<trilobit_liveValidation.length; formCount++)
-    {
+    for (formCount = 0; formCount < trilobit_liveValidation.length; formCount++) {
         firstRun = true;
 
-        for (formElementCount=0; formElementCount<trilobit_liveValidation[formCount].length; formElementCount++)
-        {
-            if (firstRun == false)
-            {
+        for (formElementCount = 0; formElementCount < trilobit_liveValidation[formCount].length; formElementCount++) {
+            if (firstRun === false) {
                 continue;
             }
 
             formElement = trilobit_liveValidation[formCount][formElementCount];
 
             // ist es eine Checkbox / Radio?
-            if (   typeof formElement.validations[1] !== "undefined"
+            if (typeof formElement.validations[1] !== "undefined"
                 && typeof formElement.validations[1].validationType !== "undefined"
-                && (   formElement.validations[1].validationType == 'trilobitCheckboxValidation'
-                    || formElement.validations[1].validationType == 'trilobitRadioValidation')
-            )
-            {
+                && (formElement.validations[1].validationType === 'trilobitCheckboxValidation'
+                    || formElement.validations[1].validationType === 'trilobitRadioValidation')
+            ) {
                 id = formElement.validations[1].validationAttributes.elements[0];
 
-                if (    document.getElementById('opt_' + formElement.key + '_' + id) !== null
-                    &&  document.getElementById('opt_' + formElement.key + '_' + id).form !== null
-                )
-                {
+                if (document.getElementById('opt_' + formElement.key + '_' + id) !== null
+                    && document.getElementById('opt_' + formElement.key + '_' + id).form !== null
+                ) {
                     allForms.push(document.getElementById('opt_' + formElement.key + '_' + id).form);
                     firstRun = false;
                 }
-            }
-            else
-            {
+            } else {
                 // Existiert das Feld?
-                if (   document.getElementById(formElement.key) !== null
+                if (document.getElementById(formElement.key) !== null
                     && document.getElementById(formElement.key).form !== null
-                )
-                {
+                ) {
                     allForms.push(document.getElementById(formElement.key).form);
                     firstRun = false;
                 }
@@ -64,58 +57,49 @@ trilobit.getAllForms = function(trilobit_liveValidation)
 /*
  *  Generiert für jedes Feld aus JSON eine Validierung
  */
-trilobit.configValidation = function()
-{
-    var formCount, formElementCount, formElement;
+trilobit.configValidation = function () {
+    let formCount, formElementCount, formElement;
 
     // Jedes Formularfeld
-    for (formCount=0; formCount<trilobit_liveValidation.length; formCount++)
-    {
+    for (formCount = 0; formCount < trilobit_liveValidation.length; formCount++) {
         formSubmitted = false;
 
-        for (formElementCount=0; formElementCount<trilobit_liveValidation[formCount].length; formElementCount++)
-        {
+        for (formElementCount = 0; formElementCount < trilobit_liveValidation[formCount].length; formElementCount++) {
             formElement = trilobit_liveValidation[formCount][formElementCount];
 
-            if (typeof trilobit.allCheckboxRadio[formCount] === "undefined")
-            {
-                trilobit.allCheckboxRadio[formCount] = new Array();
+            if (typeof trilobit.allCheckboxRadio[formCount] === "undefined") {
+                trilobit.allCheckboxRadio[formCount] = [];
             }
 
-            if (typeof trilobit.allFormFields[formCount] === "undefined")
-            {
-                trilobit.allFormFields[formCount] = new Array();
+            if (typeof trilobit.allFormFields[formCount] === "undefined") {
+                trilobit.allFormFields[formCount] = [];
             }
 
-            if (   typeof formElement.validations[1] !== "undefined"
+            if (typeof formElement.validations[1] !== "undefined"
                 && typeof formElement.validations[1].validationType !== "undefined"
-                && (   formElement.validations[1].validationType == 'trilobitCheckboxValidation'
-                    || formElement.validations[1].validationType == 'trilobitRadioValidation')
-            )
-            {
+                && (formElement.validations[1].validationType === 'trilobitCheckboxValidation'
+                    || formElement.validations[1].validationType === 'trilobitRadioValidation')
+            ) {
                 trilobit.checkboxRadioValidation(formCount, formElement);
                 continue;
             }
 
             // Existiert das Feld?
-            if (document.getElementById(formElement.key) == null)
-            {
+            if (document.getElementById(formElement.key) == null) {
                 continue;
             }
-            
+
             // Hidden Feld?
-            if (document.getElementById(formElement.key).type == 'hidden')
-            {
+            if (document.getElementById(formElement.key).type === 'hidden') {
                 continue;
             }
 
             trilobit.setCheckRoutine(formCount, formElement);
         }
 
-        if (   typeof trilobitFormSubmitted !== "undefined"
+        if (typeof trilobitFormSubmitted !== "undefined"
             && trilobitFormSubmitted
-        )
-        {
+        ) {
             LiveValidation.massValidate(trilobit.allFormFields[formCount]);
         }
     }
@@ -127,15 +111,14 @@ trilobit.configValidation = function()
 /*
  *  Erzeugt das LiveValidation Objekt für das jeweilige Formularelement
  */
-trilobit.setCheckRoutine = function(formCount, formElement)
-{
+trilobit.setCheckRoutine = function (formCount, formElement) {
     var newElement, i, jsonSettings, objects, currentSetting;
 
     // LiveValidation Objekt für Feld anlegen
     newElement = new LiveValidation(
         formElement.key,
         {
-            validMessage: (typeof formElement.validMessage != 'undefined' ? formElement.validMessage : ' ' ),
+            validMessage: (typeof formElement.validMessage != 'undefined' ? formElement.validMessage : ' '),
             onInvalid: trilobit.deleteServerErrorMessage()
         }
     );
@@ -145,21 +128,15 @@ trilobit.setCheckRoutine = function(formCount, formElement)
     trilobit.addOnFocus(formElement.key);
 
     // Lade Prüfroutinen für jedes Feld
-    for (i=0; i<3; i++)
-    {
-        if (typeof formElement.validations[i] !== "undefined")
-        {
+    for (i = 0; i < 3; i++) {
+        if (typeof formElement.validations[i] !== "undefined") {
             jsonSettings = {};
 
-            for (currentSetting in formElement.validations[i]['validationAttributes'])
-            {
+            for (currentSetting in formElement.validations[i]['validationAttributes']) {
                 // String zu Regex-Pattern "konvertieren"
-                if (currentSetting == 'pattern')
-                {
+                if (currentSetting === 'pattern') {
                     jsonSettings[currentSetting] = eval(formElement.validations[i]['validationAttributes'][currentSetting]);
-                }
-                else
-                {
+                } else {
                     jsonSettings[currentSetting] = formElement.validations[i]['validationAttributes'][currentSetting];
                 }
             }
@@ -190,15 +167,12 @@ trilobit.setCheckRoutine = function(formCount, formElement)
 /*
  * Nach Servercheck: Löscht ServercheckMessage und setzt LiveValidation ErrorMessage
  */
-trilobit.deleteServerErrorMessage = function()
-{
+trilobit.deleteServerErrorMessage = function () {
     // "this" bezieht sich auf LiveValidation-Objekt
-    return function()
-    {
+    return function () {
         var element = document.getElementById(this.element.id);
 
-        if (trilobit.hasClass(element, 'error'))
-        {
+        if (trilobit.hasClass(element, 'error')) {
             var replace = new RegExp('(\\s|^)' + 'error' + '(\\s|$)');
             element.className = element.className.replace(replace, ' ');
         }
@@ -206,22 +180,18 @@ trilobit.deleteServerErrorMessage = function()
         var allNodes = element.parentNode.childNodes;
         var errorNode;
 
-        for (var i=0; i<allNodes.length; i++)
-        {
-           if (   allNodes[i].nodeName.toLowerCase() === "p"
-               && trilobit.hasClass(allNodes[i], 'error')
-           )
-           {
+        for (var i = 0; i < allNodes.length; i++) {
+            if (allNodes[i].nodeName.toLowerCase() === "p"
+                && trilobit.hasClass(allNodes[i], 'error')
+            ) {
                 errorNode = allNodes[i];
-           }
+            }
         }
 
         message = document.createElement('span');
 
-        if (errorNode !== undefined)
-        {
-            if (errorNode.childNodes[0].textContent != this.message)
-            {
+        if (errorNode !== undefined) {
+            if (errorNode.childNodes[0].textContent !== this.message) {
                 message.appendChild(document.createTextNode(errorNode.childNodes[0].textContent));
                 message.appendChild(document.createTextNode(' '));
             }
@@ -229,8 +199,7 @@ trilobit.deleteServerErrorMessage = function()
 
         message.appendChild(document.createTextNode(this.message));
 
-        if (errorNode)
-        {
+        if (errorNode) {
             element.parentNode.removeChild(errorNode);
         }
 
@@ -244,8 +213,7 @@ trilobit.deleteServerErrorMessage = function()
 /*
  * Löscht Focus-Handler
  */
-trilobit.addOnFocus = function(elementId)
-{
+trilobit.addOnFocus = function (elementId) {
     document.getElementById(elementId).onfocus = null;
 };
 
@@ -254,36 +222,28 @@ trilobit.addOnFocus = function(elementId)
  * Überschreibt Submit-Handler
  * Führt Checkbox / Radio Submit und LiveValidation Submit zusammen
  */
-trilobit.handleSubmitSequence = function(allForms)
-{
+trilobit.handleSubmitSequence = function (allForms) {
     var formCount;
 
-    for (formCount=0; formCount<allForms.length; formCount++)
-    {
-        function formClosure(formId, onsubmitForm)
-        {
+    for (formCount = 0; formCount < allForms.length; formCount++) {
+        function formClosure(formId, onsubmitForm) {
             var liveValidationOnSubmit, resultLiveValidation, resultTrilobitValidation, result;
 
             liveValidationOnSubmit = onsubmitForm.onsubmit;
 
-            onsubmitForm.onsubmit = function(e)
-            {
-                if (liveValidationOnSubmit !== null)
-                {
+            onsubmitForm.onsubmit = function (e) {
+                if (liveValidationOnSubmit !== null) {
                     resultLiveValidation = liveValidationOnSubmit.call(this, e || window.event);
                     resultTrilobitValidation = trilobit.isCheckboxRadioValid(formId);
 
-                    result = (resultLiveValidation && resultTrilobitValidation ? true : false);
-                }
-                else
-                {
+                    result = (resultLiveValidation && resultTrilobitValidation);
+                } else {
                     result = trilobit.isCheckboxRadioValid(formId);
                 }
 
-                if (   !result
+                if (!result
                     && !trilobit.hasClass(onsubmitForm, "formSubmitted")
-                )
-                {
+                ) {
                     onsubmitForm.className = onsubmitForm.className + " formSubmitted";
                 }
 
@@ -301,8 +261,7 @@ trilobit.handleSubmitSequence = function(allForms)
 /*
  * Überprüft, ob für Objekt Klasse gesetzt ist
  */
-trilobit.hasClass = function (objElement, nameOfClass)
-{
+trilobit.hasClass = function (objElement, nameOfClass) {
     return new RegExp('(\\s|^)' + nameOfClass + '(\\s|$)').test(objElement.className);
 };
 
@@ -310,26 +269,22 @@ trilobit.hasClass = function (objElement, nameOfClass)
 /*
  * Setzt click-Event auf Checkboxen / Radios
 */
-trilobit.checkboxRadioValidation = function(formCount, checkboxRadioGroup)
-{
+trilobit.checkboxRadioValidation = function (formCount, checkboxRadioGroup) {
     var numberOfElements, i, id;
 
     trilobit.allCheckboxRadio[formCount][trilobit.allCheckboxRadio[formCount].length] = checkboxRadioGroup;
 
     numberOfElements = checkboxRadioGroup.validations[1].validationAttributes.elements.length;
 
-    for (i=0; i<numberOfElements; i++)
-    {
+    for (i = 0; i < numberOfElements; i++) {
         id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
 
         // ergänzende Kontrolle, ob es das Feld gibt
-        if (   typeof id !== "undefined"
+        if (typeof id !== "undefined"
             && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
-        )
-        {
+        ) {
             // Setze Clickevent auf jede Checkbox
-            document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).onclick = function()
-            {
+            document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).onclick = function () {
                 trilobit.countOfCheckedBoxes(checkboxRadioGroup);
             };
         }
@@ -340,36 +295,31 @@ trilobit.checkboxRadioValidation = function(formCount, checkboxRadioGroup)
 /*
  * Überprüft, ob alle Checkboxen / Radios valide sind
 */
-trilobit.isCheckboxRadioValid = function(formCount)
-{
-    var returnValueForm, i, checkboxRadioGroup, isMandatory, id;
+trilobit.isCheckboxRadioValid = function (formCount) {
+    let returnValueForm, i, checkboxRadioGroup, isMandatory, id;
 
     returnValueForm = true;
 
-    for (i=0; i<trilobit.allCheckboxRadio[formCount].length; i++)
-    {
+    for (i = 0; i < trilobit.allCheckboxRadio[formCount].length; i++) {
         isMandatory = false;
 
         checkboxRadioGroup = trilobit.allCheckboxRadio[formCount][i];
 
-        id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
+        id = checkboxRadioGroup.validations[1].validationAttributes.elements[0];
 
         // ergänzende Kontrolle, ob es das Feld gibt
-        if (   typeof id !== "undefined"
+        if (typeof id !== "undefined"
             && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
-        )
-        {
-            if (   typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
-                && checkboxRadioGroup.validations[1].validationAttributes.mandatory == 1
-                )
-            {
+        ) {
+            if (typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
+                && checkboxRadioGroup.validations[1].validationAttributes.mandatory === 1
+            ) {
                 isMandatory = true;
             }
 
-            if (   trilobit.countOfCheckedBoxes(checkboxRadioGroup) == 0
+            if (trilobit.countOfCheckedBoxes(checkboxRadioGroup) === 0
                 && isMandatory
-                )
-            {
+            ) {
                 returnValueForm = false;
             }
         }
@@ -382,48 +332,36 @@ trilobit.isCheckboxRadioValid = function(formCount)
 /*
  * Liefert für die Gruppe die Anzahl der angeklickten Elemente zurück.
 */
-trilobit.countOfCheckedBoxes = function(checkboxRadioGroup)
-{
-    var numberOfElements, clickedElements, i, id, isMandatory;
+trilobit.countOfCheckedBoxes = function (checkboxRadioGroup) {
+    let numberOfElements, clickedElements, i, id, isMandatory;
 
     clickedElements = 0
 
     numberOfElements = checkboxRadioGroup.validations[1].validationAttributes.elements.length;
     // Überprüfe bei jedem Klick auf eine Checkbox, ob Checkboxen ausgewählt sind
 
-    for (i=0; i<numberOfElements; i++)
-    {
-
+    for (i = 0; i < numberOfElements; i++) {
         id = checkboxRadioGroup.validations[1].validationAttributes.elements[i];
 
-        if (   document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
+        if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
             && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).checked
-        )
-        {
+        ) {
             clickedElements++;
         }
     }
 
     // Wenn Checkbox ausgewählt ist und Errormessage angezeigt wird
-    if (clickedElements > 0)
-    {
+    if (clickedElements > 0) {
         trilobit.removeCheckboxRadioErrorMessage(checkboxRadioGroup);
     }
 
-    isMandatory = false;
-
-    if (   typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
-        && checkboxRadioGroup.validations[1].validationAttributes.mandatory == 1
-    )
-    {
-        isMandatory = true;
-    }
+    isMandatory = typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
+        && checkboxRadioGroup.validations[1].validationAttributes.mandatory === 1;
 
     // keine Checkbox ausgewählt
-    if (   clickedElements < 1
+    if (clickedElements < 1
         && isMandatory
-    )
-    {
+    ) {
         trilobit.createCheckboxRadioErrorMessage(checkboxRadioGroup);
     }
 
@@ -434,12 +372,10 @@ trilobit.countOfCheckedBoxes = function(checkboxRadioGroup)
 /*
  * Fals eine Fehlermeldung existiert, wird diese gelöscht
 */
-trilobit.removeCheckboxRadioErrorMessage = function(checkboxRadioGroup)
-{
-    var objSpan;
+trilobit.removeCheckboxRadioErrorMessage = function (checkboxRadioGroup) {
+    let objSpan;
 
-    if (document.getElementById('errormessage_' + checkboxRadioGroup.key) !== null)
-    {
+    if (document.getElementById('errormessage_' + checkboxRadioGroup.key) !== null) {
         objSpan = document.getElementById('errormessage_' + checkboxRadioGroup.key);
         objSpan.parentNode.removeChild(objSpan);
     }
@@ -449,12 +385,10 @@ trilobit.removeCheckboxRadioErrorMessage = function(checkboxRadioGroup)
 /*
  * Legt eine span mit einer Fehlermeldung an
 */
-trilobit.createCheckboxRadioErrorMessage = function(checkboxRadioGroup)
-{
-    var errorMessage, id;
+trilobit.createCheckboxRadioErrorMessage = function (checkboxRadioGroup) {
+    let errorMessage, id;
 
-    if (document.getElementById('errormessage_' + checkboxRadioGroup.key) === null)
-    {
+    if (document.getElementById('errormessage_' + checkboxRadioGroup.key) === null) {
         //Lege Errormessage an
         errorMessage = document.createElement("span");
         errorMessage.setAttribute('class', 'LV_validation_message LV_invalid');
@@ -468,10 +402,9 @@ trilobit.createCheckboxRadioErrorMessage = function(checkboxRadioGroup)
         var lastElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
         lastElement.parentNode.parentNode.appendChild(errorMessage);
         */
-        if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null)
-        {
-            var firstElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
-            firstElement.parentNode.parentNode.insertBefore(errorMessage,firstElement.parentNode);
+        if (document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null) {
+            let firstElement = document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id);
+            firstElement.parentNode.parentNode.insertBefore(errorMessage, firstElement.parentNode);
         }
     }
 };
@@ -480,21 +413,15 @@ trilobit.createCheckboxRadioErrorMessage = function(checkboxRadioGroup)
 /*
  * setzt neues onload
 */
-trilobit.addLoadEvent = function(newonload)
-{
-    var oldonload = window.onload;
+trilobit.addLoadEvent = function (newonload) {
+    let oldonload = window.onload;
 
-    if (typeof window.onload != 'function')
-    {
+    if (typeof window.onload != 'function') {
         window.onload = newonload;
-    }
-    else
-    {
-        window.onload = function()
-        {
+    } else {
+        window.onload = function () {
             newonload();
-            if (oldonload)
-            {
+            if (oldonload) {
                 oldonload();
             }
         };
