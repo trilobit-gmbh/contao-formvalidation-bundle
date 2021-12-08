@@ -84,12 +84,15 @@ class ModuleRegistration extends \Contao\ModuleRegistration
 
             if ('password' === $field) {
                 $minPasswordLength = Config::get('minPasswordLength');
+
                 $elements[$fieldId]['minlength'] = $minPasswordLength;
+                $elements[$fieldId]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
 
                 $elements[$fieldId.'_confirm']['type'] = 'passwordMatch';
                 $elements[$fieldId.'_confirm']['mandatory'] = 1;
                 $elements[$fieldId.'_confirm']['minlength'] = $minPasswordLength;
                 $elements[$fieldId.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($fieldId.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                $elements[$fieldId.'_confirm']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
                 $elements[$fieldId.'_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($fieldId.'_confirm', 'passwordMatch');
             }
 
