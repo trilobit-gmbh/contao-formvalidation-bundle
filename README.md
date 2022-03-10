@@ -46,5 +46,5 @@ Registration / Registrierung
 Compatibility
 -------------
 
-- Contao version ~4.4
 - Contao version ~4.9
+- Contao version ~4.13

@@ -100,9 +100,7 @@ class ModuleRegistration extends \Contao\ModuleRegistration
                 $elements[$fieldId]['type'] = $inputType;
                 $elements[$fieldId]['name'] = $field;
 
-                if ('groups' === $field
-                    || 'newsletter' === $field
-                ) {
+                if ('groups' === $field || 'newsletter' === $field) {
                     $this->import('Database');
 
                     $objSession = $this->Database->prepare('SELECT * FROM tl_module WHERE id=?')
