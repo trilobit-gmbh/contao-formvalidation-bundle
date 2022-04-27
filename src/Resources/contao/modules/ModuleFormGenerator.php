@@ -46,8 +46,21 @@ class ModuleFormGenerator extends \Contao\Form
         $objValidationHelper = new Helper();
 
         while ($objFields->next()) {
+            if ('selectCountry' === $objFields->type
+                || 'selectLanguage' === $objFields->type
+                || 'selectDatabase' === $objFields->type
+            ) {
+                $objFields->type = 'select';
+            }
+
             if ('submit' === $objFields->type
+                || 'html' === $objFields->type
+                || 'explanation' === $objFields->type
+                || 'fieldsetStart' === $objFields->type
+                || 'fieldsetStop' === $objFields->type
                 || 'range' === $objFields->type
+                || 'checkboxDatabase' === $objFields->type
+                || 'radioDatabase' === $objFields->type
                 || ('select' === $objFields->type && 1 === $objFields->multiple)
             ) {
                 continue;
