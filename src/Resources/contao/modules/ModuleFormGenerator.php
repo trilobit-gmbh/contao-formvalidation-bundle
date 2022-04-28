@@ -27,6 +27,10 @@ class ModuleFormGenerator extends \Contao\Form
 
     protected function compile()
     {
+        if (empty($_SESSION['FILES'])) {
+            $_SESSION['FILES'] = [];
+        };
+        
         $strParentCompile = parent::compile();
 
         $formId = \strlen($this->formID) ? $this->formID : $this->id;
@@ -42,20 +46,29 @@ class ModuleFormGenerator extends \Contao\Form
         $objValidationHelper = new Helper();
 
         while ($objFields->next()) {
+            if ('selectCountry' === $objFields->type
+                || 'selectLanguage' === $objFields->type
+                || 'selectDatabase' === $objFields->type
+            ) {
+                $objFields->type = 'select';
+            }
+
             if ('submit' === $objFields->type
-                //|| $objFields->type == 'fineUploader'
-                || ('select' === $objFields->type
-                    && 1 === $objFields->multiple
-                )
+                || 'html' === $objFields->type
+                || 'explanation' === $objFields->type
+                || 'fieldsetStart' === $objFields->type
+                || 'fieldsetStop' === $objFields->type
+                || 'range' === $objFields->type
+                || 'checkboxDatabase' === $objFields->type
+                || 'radioDatabase' === $objFields->type
+                || ('select' === $objFields->type && 1 === $objFields->multiple)
             ) {
                 continue;
             }
 
             $strPrefix = '';
 
-            if ('checkbox' === $objFields->type
-                || 'radio' === $objFields->type
-            ) {
+            if ('checkbox' === $objFields->type || 'radio' === $objFields->type) {
                 $elements[$objFields->id]['type'] = $objFields->type;
                 $elements[$objFields->id]['name'] = $objFields->name;
 
@@ -63,9 +76,7 @@ class ModuleFormGenerator extends \Contao\Form
                     $elements[$objFields->id]['elements'][$key] = $key;
                 }
             } else {
-                if ('select' === $objFields->type
-                    || 'upload' === $objFields->type
-                ) {
+                if ('select' === $objFields->type || 'upload' === $objFields->type) {
                     $objFields->rgxp = '';
                 }
 
@@ -101,7 +112,7 @@ class ModuleFormGenerator extends \Contao\Form
 
                 $elements[$strPrefix.$objFields->id.'_confirm']['type'] = 'passwordMatch';
 
-                if (1 === $elements[$strPrefix.$objFields->id]['mandatory']) {
+                if (array_key_exists('mandatory', $elements[$strPrefix.$objFields->id]) && 1 === $elements[$strPrefix.$objFields->id]['mandatory']) {
                     $elements[$strPrefix.$objFields->id.'_confirm']['mandatory'] = 1;
                     $elements[$strPrefix.$objFields->id.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix.$objFields->id.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
                 }
