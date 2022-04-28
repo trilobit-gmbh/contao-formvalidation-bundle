@@ -127,7 +127,7 @@ class JsonFileGenerator
         foreach ($elements as $elementKey => $elementValue) {
             $currentField = [];
 
-            if (array_key_exists('mandatory', $elementValue)
+            if (\array_key_exists('mandatory', $elementValue)
                 && 1 === $elementValue['mandatory']
                 && 'checkbox' !== $elementValue['type']
                 && 'radio' !== $elementValue['type']
@@ -139,7 +139,7 @@ class JsonFileGenerator
             if ('checkbox' === $elementValue['type']
                 || 'radio' === $elementValue['type']
             ) {
-                if (array_key_exists('mandatory', $elementValue) && 1 === $elementValue['mandatory']
+                if (\array_key_exists('mandatory', $elementValue) && 1 === $elementValue['mandatory']
                 ) {
                     $currentField[1]['validationType'] = $elementValue['type'];
                     $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['mandatoryMessage'];
@@ -256,14 +256,14 @@ class JsonFileGenerator
                     break;
             }
 
-            if (array_key_exists('minlength', $elementValue)) {
+            if (\array_key_exists('minlength', $elementValue)) {
                 $currentField[2]['validationType'] = 'Validate.Length';
                 $currentField[2]['validationAttributes']['minimum'] = $elementValue['minlength'];
                 $currentField[2]['validationAttributes']['tooShortMessage'] = $elementValue['minlengthMessage'];
             }
 
             // in case of a maxlength
-            if (array_key_exists('maxlength', $elementValue)) {
+            if (\array_key_exists('maxlength', $elementValue)) {
                 $currentField[2]['validationType'] = 'Validate.Length';
                 $currentField[2]['validationAttributes']['maximum'] = $elementValue['maxlength'];
                 $currentField[2]['validationAttributes']['tooLongMessage'] = $elementValue['maxlengthMessage'];
