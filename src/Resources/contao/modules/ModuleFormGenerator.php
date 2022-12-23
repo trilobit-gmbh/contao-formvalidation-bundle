@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * @copyright  trilobit GmbH
  * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
  * @license    LGPL-3.0-or-later
- * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
@@ -41,7 +42,8 @@ class ModuleFormGenerator extends \Contao\Form
 
         $objFields = Database::getInstance()
             ->prepare("SELECT * FROM tl_form_field WHERE pid=? AND invisible='' ORDER BY sorting")
-            ->execute($formId);
+            ->execute($formId)
+        ;
 
         $objValidationHelper = new Helper();
 

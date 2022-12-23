@@ -5,7 +5,7 @@ trilobit_formvalidation offers you a live validation of form fields based on the
 
 For consistency reasons the extension uses the same regular expressions as core Contao as well as the same error or warning messages, if validation fails.
 
-It works immediately after installation. You may want to adapt CSS classes to your individual context. 
+It works immediately after installation. You may want to adapt CSS classes to your individual context.
 
 The following forms are supported
 
@@ -43,8 +43,10 @@ Screenshot
 Registration / Registrierung
 
 
+
 Compatibility
 -------------
 
 - Contao version ~4.9
 - Contao version ~4.13
+- Contao version ~5.0
