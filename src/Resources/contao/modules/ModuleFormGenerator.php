@@ -12,6 +12,8 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
 use Contao\Database;
+use Contao\StringUtil;
+use Trilobit\DatabaseformfieldoptionsBundle\DataContainer\Options;
 
 /**
  * Class ModuleFormGenerator.
@@ -26,13 +28,13 @@ class ModuleFormGenerator extends \Contao\Form
         return parent::generate();
     }
 
-    protected function compile()
+    protected function compile(): void
     {
         if (empty($_SESSION['FILES'])) {
             $_SESSION['FILES'] = [];
         }
 
-        $strParentCompile = parent::compile();
+        parent::compile();
 
         $formId = \strlen($this->formID) ? $this->formID : $this->id;
 
@@ -61,8 +63,6 @@ class ModuleFormGenerator extends \Contao\Form
                 || 'fieldsetStart' === $objFields->type
                 || 'fieldsetStop' === $objFields->type
                 || 'range' === $objFields->type
-                || 'checkboxDatabase' === $objFields->type
-                || 'radioDatabase' === $objFields->type
                 || ('select' === $objFields->type && 1 === $objFields->multiple)
             ) {
                 continue;
@@ -70,25 +70,59 @@ class ModuleFormGenerator extends \Contao\Form
 
             $strPrefix = '';
 
-            if ('checkbox' === $objFields->type || 'radio' === $objFields->type) {
-                $elements[$objFields->id]['type'] = $objFields->type;
-                $elements[$objFields->id]['name'] = $objFields->name;
+            switch ($objFields->type) {
+                case 'checkbox':
+                case 'radio':
+                    $elements[$objFields->id]['type'] = $objFields->type;
+                    $elements[$objFields->id]['name'] = $objFields->name;
 
-                foreach (deserialize($objFields->options, true) as $key => $value) {
-                    $elements[$objFields->id]['elements'][$key] = $key;
-                }
-            } else {
-                if ('select' === $objFields->type || 'upload' === $objFields->type) {
+                    foreach (StringUtil::deserialize($objFields->options, true) as $key => $value) {
+                        $elements[$objFields->id]['elements'][$key] = $key;
+                    }
+
                     $objFields->rgxp = '';
-                }
+                    break;
 
-                $strPrefix = 'ctrl_';
-                $elements[$strPrefix.$objFields->id]['type'] = '';
+                case 'checkboxDatabase':
+                    $elements[$objFields->id]['type'] = 'checkbox';
+                    $elements[$objFields->id]['name'] = $objFields->name;
 
-                if ('' !== $objFields->rgxp) {
-                    $elements[$strPrefix.$objFields->id]['type'] = $objFields->rgxp;
-                    $elements[$strPrefix.$objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id, $objFields->rgxp);
-                }
+                    $elements[$objFields->id]['elements'] = range(0, \count((new Options())->prepareOptions($objFields)) - 1);
+
+                    $objFields->type = 'checkbox';
+                    $objFields->rgxp = '';
+                    break;
+
+                case 'radioDatabase':
+                    $elements[$objFields->id]['type'] = 'radio';
+                    $elements[$objFields->id]['name'] = $objFields->name;
+
+                    $elements[$objFields->id]['elements'] = range(0, \count((new Options())->prepareOptions($objFields)) - 1);
+
+                    $objFields->type = 'radio';
+                    $objFields->rgxp = '';
+                    break;
+
+                case 'select':
+                case 'upload':
+                    $strPrefix = 'ctrl_';
+                    $elements[$strPrefix.$objFields->id]['type'] = '';
+
+                    $objFields->rgxp = '';
+                    break;
+
+                default:
+                    $strPrefix = 'ctrl_';
+                    $elements[$strPrefix.$objFields->id]['type'] = '';
+            }
+
+            if ('httpurl' === $objFields->rgxp) {
+                $objFields->rgxp = 'url';
+            }
+
+            if ('' !== $objFields->rgxp) {
+                $elements[$strPrefix.$objFields->id]['type'] = $objFields->rgxp;
+                $elements[$strPrefix.$objFields->id]['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id, $objFields->rgxp);
             }
 
             if ($objFields->mandatory) {
@@ -142,8 +176,5 @@ class ModuleFormGenerator extends \Contao\Form
         // submits config
         $objJsonGenerator = new JsonFileGenerator();
         $objJsonGenerator->createJsonFile($elements, 'tl_form_'.$formId);
-
-        // return compiled parent class
-        return $strParentCompile;
     }
 }

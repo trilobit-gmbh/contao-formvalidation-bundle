@@ -118,7 +118,7 @@ class Helper
     {
         $message = '';
 
-        if ($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength']) {
+        if (isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'])) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'];
         } else {
             $label = preg_replace('/&#92;/', '&#92;&#92;', $label);

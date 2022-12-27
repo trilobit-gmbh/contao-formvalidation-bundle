@@ -16,6 +16,7 @@ use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\NewsletterBundle\ContaoNewsletterBundle;
+use Trilobit\DatabaseformfieldoptionsBundle\TrilobitDatabaseformfieldoptionsBundle;
 use Trilobit\FormvalidationBundle\TrilobitFormvalidationBundle;
 
 /**
@@ -32,6 +33,7 @@ class Plugin implements BundlePluginInterface
             BundleConfig::create(TrilobitFormvalidationBundle::class)
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
+                    TrilobitDatabaseformfieldoptionsBundle::class,
                     ContaoCommentsBundle::class,
                     ContaoNewsletterBundle::class,
                     'notification_center',
