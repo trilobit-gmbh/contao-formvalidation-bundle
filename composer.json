@@ -1,6 +1,6 @@
 {
     "name": "trilobit-gmbh/contao-formvalidation-bundle",
-    "description": "Contao 4 formvalidation bundle",
+    "description": "Contao 4 / Contao 5 formvalidation bundle",
     "type": "contao-bundle",
     "license": "LGPL-3.0-or-later",
     "authors": [
