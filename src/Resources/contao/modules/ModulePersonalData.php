@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * @copyright  trilobit GmbH
  * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
  * @license    LGPL-3.0-or-later
- * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
@@ -105,7 +106,8 @@ class ModulePersonalData extends \Contao\ModulePersonalData
 
                     $objSession = $this->Database->prepare('SELECT * FROM tl_module WHERE id=?')
                         ->limit(1)
-                        ->execute($formId);
+                        ->execute($formId)
+                    ;
 
                     while ($objSession->next()) {
                         if ('groups' === $field) {
