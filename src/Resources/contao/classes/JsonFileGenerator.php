@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * @copyright  trilobit GmbH
  * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
  * @license    LGPL-3.0-or-later
- * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
@@ -13,6 +14,7 @@ use Contao\Config;
 use Contao\Date;
 use Contao\File;
 use Contao\Input;
+use Contao\System;
 
 /**
  * Class JsonFileGenerator.
@@ -46,8 +48,10 @@ class JsonFileGenerator
             .'.js'
         ;
 
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
         // write validation file
-        if (!file_exists(TL_ROOT.'/'.$strValidationFile)) {
+        if (!file_exists($rootDir.'/'.$strValidationFile)) {
             $objFile = new File($strValidationFile);
             $objFile->write($liveValidationValue);
             $objFile->close();
@@ -106,7 +110,7 @@ class JsonFileGenerator
         $regexEmail = '/^(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)?(\w+[!#\$%&\'\*\+\-\/=\?^_`\.\{\|\}~]*)+?(\w+[!#\$%&\'\*\+\-\/=\?^_`\{\|\}~]*)+@\w[\w_\.-]+\.[a-z]{2,}$/i';
 
         // Load Contao date-regex
-        $objDate = new \Date();
+        $objDate = new Date();
 
         $regexDate = $objDate->getRegexp(Date::getNumericDateFormat());
         $regexDatim = $objDate->getRegexp(Date::getNumericDatimFormat());

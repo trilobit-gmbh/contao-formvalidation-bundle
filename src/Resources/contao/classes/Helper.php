@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * @copyright  trilobit GmbH
  * @author     trilobit GmbH <https://github.com/trilobit-gmbh>
  * @license    LGPL-3.0-or-later
- * @link       http://github.com/trilobit-gmbh/contao-formvalidation-bundle
  */
 
 namespace Trilobit\FormvalidationBundle;
@@ -117,7 +118,7 @@ class Helper
     {
         $message = '';
 
-        if ($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength']) {
+        if (isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'])) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'];
         } else {
             $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
