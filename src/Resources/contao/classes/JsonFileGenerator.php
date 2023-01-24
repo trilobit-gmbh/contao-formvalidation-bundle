@@ -171,6 +171,7 @@ class JsonFileGenerator
             switch ($elementValue['type']) {
                 // Fieldtype Digits
                 // only digits allowed
+                case 'captcha':
                 case 'digit':
                     $currentField[1]['validationType'] = 'Validate.Numericality';
                     break;
@@ -245,17 +246,18 @@ class JsonFileGenerator
                         $currentField[1]['validationAttributes']['match'] = $treffer[1];
                     }
                     break;
-                case 'captcha':
-                    $currentField[1]['validationType'] = 'Validate.Numericality';
-                    break;
                 case 'checkbox':
                     $currentField[1]['validationType'] = 'trilobitCheckboxValidation';
-                    $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
+                    if (array_key_exists('name', $elementValue)) {
+                        $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
+                    }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
                     break;
                 case 'radio':
                     $currentField[1]['validationType'] = 'trilobitRadioValidation';
-                    $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
+                    if (array_key_exists('name', $elementValue)) {
+                        $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
+                    }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
                     break;
             }
