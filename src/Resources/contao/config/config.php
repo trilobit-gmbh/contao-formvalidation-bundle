@@ -16,8 +16,6 @@ use Trilobit\FormvalidationBundle\ModuleFormGenerator;
 use Trilobit\FormvalidationBundle\ModuleLogin;
 use Trilobit\FormvalidationBundle\ModuleNewsletterSubscribe;
 use Trilobit\FormvalidationBundle\ModuleNewsletterUnsubscribe;
-use Trilobit\FormvalidationBundle\ModulePassword;
-use Trilobit\FormvalidationBundle\ModulePasswordNotificationCenter;
 use Trilobit\FormvalidationBundle\ModulePersonalData;
 use Trilobit\FormvalidationBundle\ModuleRegistration;
 
@@ -28,10 +26,17 @@ $GLOBALS['FE_MOD']['application']['form'] = ModuleFormGenerator::class;
 $GLOBALS['FE_MOD']['user']['registration'] = ModuleRegistration::class;
 $GLOBALS['FE_MOD']['user']['login'] = ModuleLogin::class;
 $GLOBALS['FE_MOD']['user']['changePassword'] = ModuleChangePassword::class;
-$GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = ModulePasswordNotificationCenter::class;
-$GLOBALS['FE_MOD']['user']['lostPassword'] = ModulePassword::class;
+$GLOBALS['FE_MOD']['user']['lostPassword'] = class_exists(\Contao\ModulePassword::class) ? \Trilobit\FormvalidationBundle\ModulePassword::class : \Trilobit\FormvalidationBundle\ModuleLostPassword::class;
 $GLOBALS['FE_MOD']['user']['closeAccount'] = ModuleCloseAccount::class;
 $GLOBALS['FE_MOD']['user']['personalData'] = ModulePersonalData::class;
+
+if (class_exists(\Contao\ModulePasswordNotificationCenter::class)) {
+    $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = \Contao\ModulePasswordNotificationCenter::class;
+}
+
+if (class_exists(\Contao\ModulePasswordNotificationCenter::class)) {
+    $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = \Contao\ModulePasswordNotificationCenter::class;
+}
 
 if (class_exists(\Contao\ContentComments::class)) {
     $GLOBALS['TL_CTE']['includes']['comments'] = ContentComments::class;

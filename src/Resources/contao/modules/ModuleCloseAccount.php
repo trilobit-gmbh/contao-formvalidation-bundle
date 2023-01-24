@@ -29,7 +29,7 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
     {
         $strParentCompile = parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
         $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();

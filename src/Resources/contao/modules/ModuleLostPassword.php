@@ -15,7 +15,7 @@ use Contao\Config;
 /**
  * Class ModulePassword.
  */
-class ModulePassword extends \Contao\ModulePassword
+class ModuleLostPassword extends \Contao\ModuleLostPassword
 {
     /**
      * @return string

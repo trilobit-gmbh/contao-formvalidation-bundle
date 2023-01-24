@@ -131,6 +131,10 @@ class JsonFileGenerator
         foreach ($elements as $elementKey => $elementValue) {
             $currentField = [];
 
+            if (!\array_key_exists('type', $elementValue)) {
+                continue;
+            }
+
             if (\array_key_exists('mandatory', $elementValue)
                 && 1 === $elementValue['mandatory']
                 && 'checkbox' !== $elementValue['type']
@@ -248,14 +252,14 @@ class JsonFileGenerator
                     break;
                 case 'checkbox':
                     $currentField[1]['validationType'] = 'trilobitCheckboxValidation';
-                    if (array_key_exists('name', $elementValue)) {
+                    if (\array_key_exists('name', $elementValue)) {
                         $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
                     }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
                     break;
                 case 'radio':
                     $currentField[1]['validationType'] = 'trilobitRadioValidation';
-                    if (array_key_exists('name', $elementValue)) {
+                    if (\array_key_exists('name', $elementValue)) {
                         $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
                     }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];

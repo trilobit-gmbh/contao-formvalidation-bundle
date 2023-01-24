@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
+use Contao\StringUtil;
 
 /**
  * Class ModuleRegistration.
@@ -29,7 +30,7 @@ class ModuleRegistration extends \Contao\ModuleRegistration
     {
         $strParentCompile = parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
         $objValidationHelper = new Helper();
 
@@ -52,33 +53,26 @@ class ModuleRegistration extends \Contao\ModuleRegistration
                 $fieldId = 'ctrl_'.$field;
             }
 
-            if (version_compare(
-                    \Contao\System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
-                    '4.6.0'
-                ) >= 0
-            ) {
-                // [Core] Append the module ID to the form field IDs to prevent duplicate IDs (see #1493), 25 Jun 2018
-                $fieldId .= '_'.$formId;
-            }
+            $fieldId .= '_'.$formId;
 
             $elements[$fieldId]['inputType'] = $inputType;
 
-            if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp']) {
+            if (\array_key_exists('rgxp', $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval'])) {
                 $elements[$fieldId]['type'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp'];
                 $elements[$fieldId]['failureMessage'] = $objValidationHelper->getFailureMessage($fieldId, $elements[$fieldId]['type']);
             }
 
-            if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['mandatory']) {
+            if (\array_key_exists('mandatory', $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval'])) {
                 $elements[$fieldId]['mandatory'] = 1;
                 $elements[$fieldId]['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($fieldId, $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['label'][0]);
             }
 
-            if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['minlength']) {
+            if (\array_key_exists('minlength', $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval'])) {
                 $elements[$fieldId]['minlength'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['minlength'];
                 $elements[$fieldId]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($fieldId, $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['label'][0], $elements[$fieldId]['minlength']);
             }
 
-            if ($GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['maxlength']) {
+            if (\array_key_exists('maxlength', $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval'])) {
                 $elements[$fieldId]['maxlength'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['maxlength'];
                 $elements[$fieldId]['maxlengthMessage'] = $objValidationHelper->getMaxlengthMessage($fieldId, $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['label'][0], $elements[$fieldId]['maxlength']);
             }
@@ -111,11 +105,11 @@ class ModuleRegistration extends \Contao\ModuleRegistration
 
                     while ($objSession->next()) {
                         if ('groups' === $field) {
-                            foreach (deserialize($objSession->reg_groups, true) as $key => $value) {
+                            foreach (StringUtil::deserialize($objSession->reg_groups, true) as $key => $value) {
                                 $elements[$fieldId]['elements'][$key] = $value;
                             }
                         } elseif ('newsletter' === $field) {
-                            foreach (deserialize($objSession->newsletters, true) as $key => $value) {
+                            foreach (StringUtil::deserialize($objSession->newsletters, true) as $key => $value) {
                                 $elements[$fieldId]['elements'][$key] = $value;
                             }
                         }
