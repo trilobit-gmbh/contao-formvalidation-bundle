@@ -27,7 +27,7 @@ class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
     {
         $strParentCompile = parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
         $objValidationHelper = new Helper();
 
