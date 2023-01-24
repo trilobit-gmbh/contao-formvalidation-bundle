@@ -10,16 +10,8 @@ declare(strict_types=1);
 
 namespace Trilobit\FormvalidationBundle;
 
-use Contao\System;
-
-/**
- * Class ModuleComments.
- */
 class ModuleComments extends \Contao\ModuleComments
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -27,10 +19,9 @@ class ModuleComments extends \Contao\ModuleComments
 
     protected function compile()
     {
-        /* @var PageModel $objPage */
-        global $objPage;
+        parent::compile();
 
-        $strParentCompile = parent::compile();
+        global $objPage;
 
         $formId = $objPage->id;
 
@@ -38,18 +29,7 @@ class ModuleComments extends \Contao\ModuleComments
 
         $elements = [];
 
-        // Jira CONTAO-478
-        // 2019-02-19
-        $fieldId = '';
-
-        if (version_compare(
-                System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
-                '4.6.0'
-            ) >= 0
-        ) {
-            // [Core] Append the module ID to the form field IDs to prevent duplicate IDs (see #1493), 25 Jun 2018
-            $fieldId = '_'.$formId;
-        }
+        $fieldId = '_'.$formId;
 
         $elements['ctrl_name'.$fieldId]['type'] = '';
         $elements['ctrl_name'.$fieldId]['mandatory'] = 1;
@@ -71,7 +51,5 @@ class ModuleComments extends \Contao\ModuleComments
         // submits config
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_comments_'.$formId);
-
-        return $strParentCompile;
     }
 }

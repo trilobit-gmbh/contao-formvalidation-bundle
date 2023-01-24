@@ -13,14 +13,8 @@ namespace Trilobit\FormvalidationBundle;
 use Contao\Config;
 use Contao\StringUtil;
 
-/**
- * Class ModulePersonalData.
- */
 class ModulePersonalData extends \Contao\ModulePersonalData
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -28,7 +22,7 @@ class ModulePersonalData extends \Contao\ModulePersonalData
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
         $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
@@ -120,7 +114,7 @@ class ModulePersonalData extends \Contao\ModulePersonalData
                     }
                 }
 
-                if (null === $elements[$fieldId]['elements']) {
+                if (empty($elements[$fieldId]['elements'])) {
                     $elements[$fieldId]['elements'][0] = 0;
                 }
             }
@@ -144,7 +138,5 @@ class ModulePersonalData extends \Contao\ModulePersonalData
         // submits config
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_registration_'.$formId);
-
-        return $strParentCompile;
     }
 }

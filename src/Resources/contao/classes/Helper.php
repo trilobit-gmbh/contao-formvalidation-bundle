@@ -12,21 +12,10 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Date;
 
-/**
- * Class Helper.
- */
 class Helper
 {
-    /**
-     * @param $field
-     * @param $label
-     *
-     * @return string|string[]|null
-     */
     public function getMandatoryMessage($field, $label)
     {
-        $message = '';
-
         if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory']) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory'];
         } elseif (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg']['ctrl_'.$field]['mandatory']) {
@@ -43,14 +32,6 @@ class Helper
         return $message;
     }
 
-    /**
-     * @param $field
-     * @param $type
-     *
-     * @throws \Exception
-     *
-     * @return string|string[]|null
-     */
     public function getFailureMessage($field, $type)
     {
         $message = '';
@@ -82,17 +63,8 @@ class Helper
         return $message;
     }
 
-    /**
-     * @param $field
-     * @param $label
-     * @param $minlength
-     *
-     * @return string|string[]|null
-     */
     public function getMinlengthMessage($field, $label, $minlength)
     {
-        $message = '';
-
         if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength']) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength'];
         } else {
@@ -107,17 +79,8 @@ class Helper
         return $message;
     }
 
-    /**
-     * @param $field
-     * @param $label
-     * @param $maxlength
-     *
-     * @return string|string[]|null
-     */
     public function getMaxlengthMessage($field, $label, $maxlength)
     {
-        $message = '';
-
         if (isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'])) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['maxlength'];
         } else {

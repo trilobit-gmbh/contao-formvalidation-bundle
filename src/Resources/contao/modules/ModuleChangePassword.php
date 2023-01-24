@@ -12,14 +12,8 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
 
-/**
- * Class ModulePassword.
- */
 class ModuleChangePassword extends \Contao\ModuleChangePassword
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -27,7 +21,7 @@ class ModuleChangePassword extends \Contao\ModuleChangePassword
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
         $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
         $minPasswordLength = Config::get('minPasswordLength');
@@ -45,7 +39,6 @@ class ModuleChangePassword extends \Contao\ModuleChangePassword
         $elements['ctrl_password']['minlength'] = $minPasswordLength;
         $elements['ctrl_password']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword']);
         $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
-        $elements['ctrl_password']['minlengthMessage'] = $objValidationHelper->getMinlengthMessage('ctrl_password', $GLOBALS['TL_LANG']['MSC']['newPassword'], $minPasswordLength);
 
         $elements['ctrl_password_confirm']['type'] = 'passwordMatch';
         $elements['ctrl_password_confirm']['mandatory'] = 1;
@@ -56,7 +49,5 @@ class ModuleChangePassword extends \Contao\ModuleChangePassword
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_password_'.$formId);
-
-        return $strParentCompile;
     }
 }
