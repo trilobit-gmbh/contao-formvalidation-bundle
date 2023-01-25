@@ -12,14 +12,8 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
 
-/**
- * Class ModuleCloseAccount.
- */
 class ModuleCloseAccount extends \Contao\ModuleCloseAccount
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -27,9 +21,9 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
         $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();
@@ -44,7 +38,5 @@ class ModuleCloseAccount extends \Contao\ModuleCloseAccount
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_close_account_'.$formId);
-
-        return $strParentCompile;
     }
 }

@@ -15,14 +15,8 @@ use Contao\Database;
 use Contao\StringUtil;
 use Trilobit\DatabaseformfieldoptionsBundle\DataContainer\Options;
 
-/**
- * Class ModuleFormGenerator.
- */
 class ModuleFormGenerator extends \Contao\Form
 {
-    /**
-     * @return mixed
-     */
     public function generate()
     {
         return parent::generate();
@@ -36,7 +30,7 @@ class ModuleFormGenerator extends \Contao\Form
 
         parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
         $elements = [];
 

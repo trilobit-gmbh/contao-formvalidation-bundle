@@ -16,17 +16,8 @@ use Contao\File;
 use Contao\Input;
 use Contao\System;
 
-/**
- * Class JsonFileGenerator.
- */
 class JsonFileGenerator
 {
-    /**
-     * @param $elements
-     * @param $formId
-     *
-     * @throws \Exception
-     */
     public function createJsonFile($elements, $formId)
     {
         // prepare validation file content
@@ -79,14 +70,6 @@ class JsonFileGenerator
         $GLOBALS['TL_HEAD'][] = '<script>var trilobitFormSubmitted = true;</script>';
     }
 
-    /**
-     * @param $formId
-     * @param $elements
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
     protected function createJson($formId, $elements)
     {
         // exclution for alphanumeric check
@@ -131,6 +114,10 @@ class JsonFileGenerator
         foreach ($elements as $elementKey => $elementValue) {
             $currentField = [];
 
+            if (!\array_key_exists('type', $elementValue)) {
+                continue;
+            }
+
             if (\array_key_exists('mandatory', $elementValue)
                 && 1 === $elementValue['mandatory']
                 && 'checkbox' !== $elementValue['type']
@@ -164,7 +151,9 @@ class JsonFileGenerator
                      || 'extnd' === $elementValue['type']
                      || 'passwordMatch' === $elementValue['type']
             ) {
-                $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
+                if (!empty($currentField[1]['validationAttributes']['failureMessage'])) {
+                    $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
+                }
             }
 
             // set different config for each formcheck-type
@@ -248,14 +237,14 @@ class JsonFileGenerator
                     break;
                 case 'checkbox':
                     $currentField[1]['validationType'] = 'trilobitCheckboxValidation';
-                    if (array_key_exists('name', $elementValue)) {
+                    if (\array_key_exists('name', $elementValue)) {
                         $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
                     }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];
                     break;
                 case 'radio':
                     $currentField[1]['validationType'] = 'trilobitRadioValidation';
-                    if (array_key_exists('name', $elementValue)) {
+                    if (\array_key_exists('name', $elementValue)) {
                         $currentField[1]['validationAttributes']['name'] = $elementValue['name'];
                     }
                     $currentField[1]['validationAttributes']['elements'] = $elementValue['elements'];

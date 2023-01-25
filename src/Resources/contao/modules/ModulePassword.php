@@ -12,14 +12,8 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
 
-/**
- * Class ModulePassword.
- */
 class ModulePassword extends \Contao\ModulePassword
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -27,9 +21,9 @@ class ModulePassword extends \Contao\ModulePassword
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
-        $formId = \strlen($this->formID) ? $this->formID : $this->id;
+        $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
         $minPasswordLength = Config::get('minPasswordLength');
 
         $objValidationHelper = new Helper();
@@ -65,7 +59,5 @@ class ModulePassword extends \Contao\ModulePassword
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_password_'.$formId);
-
-        return $strParentCompile;
     }
 }

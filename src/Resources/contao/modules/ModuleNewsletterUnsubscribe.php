@@ -15,9 +15,6 @@ namespace Trilobit\FormvalidationBundle;
  */
 class ModuleNewsletterUnsubscribe extends \Contao\ModuleUnsubscribe
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -25,7 +22,7 @@ class ModuleNewsletterUnsubscribe extends \Contao\ModuleUnsubscribe
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
         $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
@@ -52,7 +49,5 @@ class ModuleNewsletterUnsubscribe extends \Contao\ModuleUnsubscribe
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_unsubscribe_'.$formId);
-
-        return $strParentCompile;
     }
 }

@@ -12,7 +12,7 @@ namespace Trilobit\FormvalidationBundle;
 
 use Contao\Config;
 
-class ModulePasswordNotificationCenter extends \Contao\ModulePasswordNotificationCenter
+class ModuleLostPassword extends \Contao\ModuleLostPassword
 {
     public function generate()
     {

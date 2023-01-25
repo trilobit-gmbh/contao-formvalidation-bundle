@@ -10,14 +10,8 @@ declare(strict_types=1);
 
 namespace Trilobit\FormvalidationBundle;
 
-/**
- * Class ModuleNewsletterSubscribe.
- */
 class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
 {
-    /**
-     * @return string
-     */
     public function generate()
     {
         return parent::generate();
@@ -25,7 +19,7 @@ class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
 
     protected function compile()
     {
-        $strParentCompile = parent::compile();
+        parent::compile();
 
         $formId = null !== $this->formID && \strlen($this->formID) ? $this->formID : $this->id;
 
@@ -51,7 +45,5 @@ class ModuleNewsletterSubscribe extends \Contao\ModuleSubscribe
 
         $fileGenerator = new JsonFileGenerator();
         $fileGenerator->createJsonFile($elements, 'tl_subscribe_'.$formId);
-
-        return $strParentCompile;
     }
 }
