@@ -310,6 +310,7 @@ trilobit.isCheckboxRadioValid = function (formCount) {
         // ergänzende Kontrolle, ob es das Feld gibt
         if (typeof id !== "undefined"
             && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id) !== null
+            && document.getElementById('opt_' + checkboxRadioGroup.key + '_' + id).disabled === false
         ) {
             if (typeof checkboxRadioGroup.validations[1].validationAttributes.mandatory !== "undefined"
                 && checkboxRadioGroup.validations[1].validationAttributes.mandatory === 1
@@ -370,7 +371,7 @@ trilobit.countOfCheckedBoxes = function (checkboxRadioGroup) {
 
 
 /*
- * Fals eine Fehlermeldung existiert, wird diese gelöscht
+ * Falls eine Fehlermeldung existiert, wird diese gelöscht
 */
 trilobit.removeCheckboxRadioErrorMessage = function (checkboxRadioGroup) {
     let objSpan;
@@ -383,7 +384,7 @@ trilobit.removeCheckboxRadioErrorMessage = function (checkboxRadioGroup) {
 
 
 /*
- * Legt eine span mit einer Fehlermeldung an
+ * Legt eine <span> mit Fehlermeldung an
 */
 trilobit.createCheckboxRadioErrorMessage = function (checkboxRadioGroup) {
     let errorMessage, id;
