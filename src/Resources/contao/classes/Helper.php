@@ -16,9 +16,15 @@ class Helper
 {
     public function getMandatoryMessage($field, $label)
     {
-        if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory']) {
+        if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG'])
+            && isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory'])
+            && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory']
+        ) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['mandatory'];
-        } elseif (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg']['ctrl_'.$field]['mandatory']) {
+        } elseif (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG'])
+            && isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg']['ctrl_'.$field]['mandatory'])
+            && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg']['ctrl_'.$field]['mandatory']
+        ) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg']['ctrl_'.$field]['mandatory'];
         } else {
             $message = $GLOBALS['TL_LANG']['ERR']['mandatory'];
@@ -36,7 +42,10 @@ class Helper
     {
         $message = '';
 
-        if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['failure']) {
+        if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG'])
+            && isset($GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['failure'])
+            && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['failure']
+        ) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['failure'];
         } else {
             if ('datim' === $type) {
@@ -59,6 +68,13 @@ class Helper
         }
 
         $message = preg_replace('/""\s/', '', $message);
+
+        /*var_dump([
+            $field,
+            $type,
+            $GLOBALS['TL_LANG']['ERR'][$type],
+            $message,
+        ]);*/
 
         return $message;
     }

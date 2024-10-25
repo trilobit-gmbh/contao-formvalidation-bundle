@@ -151,7 +151,7 @@ class JsonFileGenerator
                      || 'extnd' === $elementValue['type']
                      || 'passwordMatch' === $elementValue['type']
             ) {
-                if (!empty($currentField[1]['validationAttributes']['failureMessage'])) {
+                if (empty($currentField[1]['validationAttributes']['failureMessage'])) {
                     $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
                 }
             }
