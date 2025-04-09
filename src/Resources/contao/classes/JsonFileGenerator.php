@@ -150,6 +150,7 @@ class JsonFileGenerator
                      || 'url' === $elementValue['type']
                      || 'extnd' === $elementValue['type']
                      || 'passwordMatch' === $elementValue['type']
+                     || 'fieldMatch' === $elementValue['type']
             ) {
                 if (empty($currentField[1]['validationAttributes']['failureMessage'])) {
                     $currentField[1]['validationAttributes']['failureMessage'] = $elementValue['failureMessage'];
@@ -230,6 +231,7 @@ class JsonFileGenerator
                     $currentField[1]['validationAttributes']['partialMatch'] = true;
                     break;
                 case 'passwordMatch':
+                case 'fieldMatch':
                     if (preg_match("/(.*?)\_confirm/", $elementKey, $treffer)) {
                         $currentField[1]['validationType'] = 'Validate.Confirmation';
                         $currentField[1]['validationAttributes']['match'] = $treffer[1];
