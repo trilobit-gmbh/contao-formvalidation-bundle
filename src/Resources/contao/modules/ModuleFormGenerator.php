@@ -65,6 +65,11 @@ class ModuleFormGenerator extends \Contao\Form
             $strPrefix = '';
 
             switch ($objFields->type) {
+                case 'fieldMatch':
+                    $strPrefix = 'ctrl_';
+                    $elements[$strPrefix.$objFields->id]['type'] = $objFields->type;
+                    break;
+
                 case 'checkbox':
                 case 'radio':
                     $elements[$objFields->id]['type'] = $objFields->type;
@@ -141,6 +146,17 @@ class ModuleFormGenerator extends \Contao\Form
                 }
 
                 $elements[$strPrefix.$objFields->id.'_confirm']['type'] = 'passwordMatch';
+
+                if (\array_key_exists('mandatory', $elements[$strPrefix.$objFields->id]) && 1 === $elements[$strPrefix.$objFields->id]['mandatory']) {
+                    $elements[$strPrefix.$objFields->id.'_confirm']['mandatory'] = 1;
+                    $elements[$strPrefix.$objFields->id.'_confirm']['mandatoryMessage'] = $objValidationHelper->getMandatoryMessage($strPrefix.$objFields->id.'_confirm', $GLOBALS['TL_LANG']['MSC']['confirmation']);
+                }
+
+                $elements[$strPrefix.$objFields->id.'_confirm']['failureMessage'] = $objValidationHelper->getFailureMessage($strPrefix.$objFields->id.'_confirm', 'passwordMatch');
+            }
+
+            if ('fieldMatch' === $objFields->type) {
+                $elements[$strPrefix.$objFields->id.'_confirm']['type'] = 'fieldMatch';
 
                 if (\array_key_exists('mandatory', $elements[$strPrefix.$objFields->id]) && 1 === $elements[$strPrefix.$objFields->id]['mandatory']) {
                     $elements[$strPrefix.$objFields->id.'_confirm']['mandatory'] = 1;
