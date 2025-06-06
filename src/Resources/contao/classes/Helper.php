@@ -83,6 +83,7 @@ class Helper
     {
         if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength']) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength'];
+            $message = sprintf($message, $label, $minlength);
         } else {
             $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
 

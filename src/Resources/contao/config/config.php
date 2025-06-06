@@ -31,11 +31,7 @@ $GLOBALS['FE_MOD']['user']['closeAccount'] = ModuleCloseAccount::class;
 $GLOBALS['FE_MOD']['user']['personalData'] = ModulePersonalData::class;
 
 if (class_exists(\Contao\ModulePasswordNotificationCenter::class)) {
-    $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = \Contao\ModulePasswordNotificationCenter::class;
-}
-
-if (class_exists(\Contao\ModulePasswordNotificationCenter::class)) {
-    $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = \Contao\ModulePasswordNotificationCenter::class;
+    $GLOBALS['FE_MOD']['user']['lostPasswordNotificationCenter'] = \Trilobit\FormvalidationBundle\ModulePasswordNotificationCenter::class;
 }
 
 if (class_exists(\Contao\ContentComments::class)) {
