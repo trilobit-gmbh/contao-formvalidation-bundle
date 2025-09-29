@@ -26,7 +26,7 @@ $GLOBALS['FE_MOD']['application']['form'] = ModuleFormGenerator::class;
 $GLOBALS['FE_MOD']['user']['registration'] = ModuleRegistration::class;
 $GLOBALS['FE_MOD']['user']['login'] = ModuleLogin::class;
 $GLOBALS['FE_MOD']['user']['changePassword'] = ModuleChangePassword::class;
-$GLOBALS['FE_MOD']['user']['lostPassword'] = class_exists(\Contao\ModulePassword::class) ? \Trilobit\FormvalidationBundle\ModulePassword::class : \Trilobit\FormvalidationBundle\ModuleLostPassword::class;
+$GLOBALS['FE_MOD']['user']['lostPassword'] = class_exists(\Contao\ModuleLostPassword::class) ? \Trilobit\FormvalidationBundle\ModulePassword::class : \Trilobit\FormvalidationBundle\ModuleLostPassword::class;
 $GLOBALS['FE_MOD']['user']['closeAccount'] = ModuleCloseAccount::class;
 $GLOBALS['FE_MOD']['user']['personalData'] = ModulePersonalData::class;
 
