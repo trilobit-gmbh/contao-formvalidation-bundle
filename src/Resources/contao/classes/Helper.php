@@ -32,7 +32,7 @@ class Helper
 
         $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
 
-        $message = sprintf($message, $label, $message);
+        $message = \sprintf($message, $label, $message);
         $message = preg_replace('/""\s/', '', $message);
 
         return $message;
@@ -59,11 +59,11 @@ class Helper
             $objDate = new Date();
 
             if ('date' === $type) {
-                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDateFormat()));
+                $message = \sprintf($message, $objDate->getInputFormat(Date::getNumericDateFormat()));
             } elseif ('datim' === $type) {
-                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericDatimFormat()));
+                $message = \sprintf($message, $objDate->getInputFormat(Date::getNumericDatimFormat()));
             } elseif ('time' === $type) {
-                $message = sprintf($message, $objDate->getInputFormat(Date::getNumericTimeFormat()));
+                $message = \sprintf($message, $objDate->getInputFormat(Date::getNumericTimeFormat()));
             }
         }
 
@@ -83,12 +83,12 @@ class Helper
     {
         if (\array_key_exists('trilobit_formvalidation', $GLOBALS['TL_LANG']) && $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength']) {
             $message = $GLOBALS['TL_LANG']['trilobit_formvalidation']['errormsg'][$field]['minlength'];
-            $message = sprintf($message, $label, $minlength);
+            $message = \sprintf($message, $label, $minlength);
         } else {
             $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
 
             $message = $GLOBALS['TL_LANG']['ERR']['minlength'];
-            $message = sprintf($message, $label, $minlength);
+            $message = \sprintf($message, $label, $minlength);
         }
 
         $message = preg_replace('/""\s/', '', $message);
@@ -104,7 +104,7 @@ class Helper
             $label = preg_replace('/&#92;/', '&#92;&#92;', $label);
 
             $message = $GLOBALS['TL_LANG']['ERR']['maxlength'];
-            $message = sprintf($message, $label, $maxlength);
+            $message = \sprintf($message, $label, $maxlength);
         }
 
         $message = preg_replace('/""\s/', '', $message);

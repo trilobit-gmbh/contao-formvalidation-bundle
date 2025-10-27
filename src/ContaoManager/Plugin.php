@@ -24,9 +24,6 @@ use Trilobit\FormvalidationBundle\TrilobitFormvalidationBundle;
  */
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getBundles(ParserInterface $parser)
     {
         return [

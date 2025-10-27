@@ -175,11 +175,11 @@ class ModuleFormGenerator extends \Contao\Form
             if ($objFields->minlength) {
                 $elements[$strPrefix.$objFields->id]['minlength'] = $objFields->minlength;
                 $elements[$strPrefix.$objFields->id]['minlengthMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix.$objFields->id, $objFields->label, $objFields->minlength);
-                //$elements[$strPrefix . $objFields->id]['tooShortMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+                // $elements[$strPrefix . $objFields->id]['tooShortMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
             }
 
-            //$elements[$strPrefix . $objFields->id]['tooLowMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
-            //$elements[$strPrefix . $objFields->id]['tooHighMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            // $elements[$strPrefix . $objFields->id]['tooLowMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
+            // $elements[$strPrefix . $objFields->id]['tooHighMessage'] = $objValidationHelper->getMinlengthMessage($strPrefix . $objFields->id, $objFields->label, $objFields->minlength);
         }
 
         // creates new object of FileGenerator
