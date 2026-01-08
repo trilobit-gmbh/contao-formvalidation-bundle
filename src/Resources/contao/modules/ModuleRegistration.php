@@ -50,6 +50,7 @@ class ModuleRegistration extends \Contao\ModuleRegistration
             $fieldId .= '_'.$formId;
 
             $elements[$fieldId]['inputType'] = $inputType;
+            $elements[$fieldId]['type'] = '';
 
             if (\array_key_exists('rgxp', $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval'])) {
                 $elements[$fieldId]['type'] = $GLOBALS['TL_DCA']['tl_member']['fields'][$field]['eval']['rgxp'];
