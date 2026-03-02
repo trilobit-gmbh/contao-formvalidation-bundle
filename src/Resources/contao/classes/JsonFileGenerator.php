@@ -25,8 +25,7 @@ class JsonFileGenerator
                              .'if (!trilobit_liveValidation) { trilobit_liveValidation = new Array(); }'."\n"
                              .'trilobit_liveValidation.push('."\n"
                              .$this->createJson($formId, $elements)
-                             .');'."\n"
-                             ;
+                             .');'."\n";
 
         // get checksum
         $strChecksum = md5($liveValidationValue);
@@ -36,8 +35,7 @@ class JsonFileGenerator
             .'js/'
             .'lv_'.$formId
             .'_'.$strChecksum
-            .'.js'
-        ;
+            .'.js';
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
 
@@ -165,66 +163,66 @@ class JsonFileGenerator
                 case 'digit':
                     $currentField[1]['validationType'] = 'Validate.Numericality';
                     break;
-                // Fieldtype Alphabetic
-                // only alphabetic chars allowed
+                    // Fieldtype Alphabetic
+                    // only alphabetic chars allowed
                 case 'alpha':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexAlpha;
                     break;
-                // Fieldtype Alphanumeric
-                // digits and alphabetic chars
+                    // Fieldtype Alphanumeric
+                    // digits and alphabetic chars
                 case 'alnum':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexAlnum;
                     break;
-                // Fieldtype Date
-                // only a valid date is allowed
-                // Format is set up in the backend settings
+                    // Fieldtype Date
+                    // only a valid date is allowed
+                    // Format is set up in the backend settings
                 case 'date':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexDate;
                     break;
-                // Fieldtype Datim
-                // Only a valid date and time are allowed
-                // Format is set up in the backend settings
+                    // Fieldtype Datim
+                    // Only a valid date and time are allowed
+                    // Format is set up in the backend settings
                 case 'datim':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexDatim;
                     break;
-                // Fieldtype Time
-                // Only a valid time is allowed
-                // Format is set up in the backend settings
+                    // Fieldtype Time
+                    // Only a valid time is allowed
+                    // Format is set up in the backend settings
                 case 'time':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexTime;
                     break;
-                // Fieldtype phone
-                // Only a valid phonenumber
+                    // Fieldtype phone
+                    // Only a valid phonenumber
                 case 'phone':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexPhone;
                     break;
-                // Fieldtype Email
-                // Needs a valid Email
+                    // Fieldtype Email
+                    // Needs a valid Email
                 case 'email':
                     $currentField[1]['validationType'] = 'Validate.Email';
                     break;
-                // Fieldtype Email
-                // Needs a valid Email
-                //case 'email':
-                //    $currentField[1]['validationType'] = 'Validate.Format';
-                //    $currentField[1]['validationAttributes']['pattern'] = $regexEmail;
-                //    break;
+                    // Fieldtype Email
+                    // Needs a valid Email
+                    // case 'email':
+                    //    $currentField[1]['validationType'] = 'Validate.Format';
+                    //    $currentField[1]['validationAttributes']['pattern'] = $regexEmail;
+                    //    break;
 
-                // Feldtyp URL
-                // Only a valid URL is allowed
+                    // Feldtyp URL
+                    // Only a valid URL is allowed
                 case 'url':
                     $currentField[1]['validationType'] = 'Validate.Format';
                     $currentField[1]['validationAttributes']['pattern'] = $regexUrl;
                     break;
-                // Feldtyp Extnd
-                // All Chars are allowed.
-                // Exclusion: # & ( ) / > = <
+                    // Feldtyp Extnd
+                    // All Chars are allowed.
+                    // Exclusion: # & ( ) / > = <
                 case 'extnd':
                     $currentField[1]['validationType'] = 'Validate.Exclusion';
                     $currentField[1]['validationAttributes']['within'] = $alnumExtend;
@@ -267,7 +265,7 @@ class JsonFileGenerator
             }
 
             // add current field to validation config
-            //$arrValidation[$elementKey]['validations'] = $currentField;
+            // $arrValidation[$elementKey]['validations'] = $currentField;
 
             $arrValidation[] = [
                 'key' => $elementKey,

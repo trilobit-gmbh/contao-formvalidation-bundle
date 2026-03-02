@@ -38,9 +38,9 @@ class ContentComments extends \Contao\ContentComments
         $fieldId = '';
 
         if (version_compare(
-                \Contao\System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
-                '4.6.0'
-            ) >= 0
+            \Contao\System::getContainer()->getParameter('kernel.packages')['contao/core-bundle'],
+            '4.6.0'
+        ) >= 0
         ) {
             // [Core] Append the module ID to the form field IDs to prevent duplicate IDs (see #1493), 25 Jun 2018
             $fieldId = '_'.$formId;
