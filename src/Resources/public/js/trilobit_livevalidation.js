@@ -7,7 +7,7 @@ if (!trilobit) {
 trilobit.allCheckboxRadio = {};
 trilobit.allFormFields = {};
 
-// Liefert alle ID's der Formulare
+// Liefert alle IDs der Formulare
 trilobit.getAllForms = function (trilobit_liveValidation) {
     let allForms, formCount, formElementCount, formElement, firstRun, id;
 
