@@ -47,12 +47,13 @@ class JsonFileGenerator
         }
 
         // include JavaScripts
-        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.compressed.js';
-        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
+        $GLOBALS['TL_JAVASCRIPT']['lv_standonline'] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.compressed.js';
+        // $GLOBALS['TL_JAVASCRIPT']['lv_standonline'] = 'bundles/trilobitformvalidation/js/livevalidation_standalone.js';
+        $GLOBALS['TL_JAVASCRIPT']['lv_trilobit'] = 'bundles/trilobitformvalidation/js/trilobit_livevalidation.js';
 
         // include validation css
         if (!Config::get('livevalidationDisableDefaultCss')) {
-            $GLOBALS['TL_CSS'][] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
+            $GLOBALS['TL_CSS']['lv_trilobit'] = 'bundles/trilobitformvalidation/css/trilobit_livevalidation.css';
         }
 
         // include validation json
@@ -68,6 +69,9 @@ class JsonFileGenerator
         $GLOBALS['TL_HEAD'][] = '<script>var trilobitFormSubmitted = true;</script>';
     }
 
+    /**
+     * @throws \JsonException
+     */
     protected function createJson($formId, $elements)
     {
         // exclution for alphanumeric check
@@ -278,6 +282,6 @@ class JsonFileGenerator
         }
 
         // Returns strin in JSON format
-        return html_entity_decode(json_encode($arrValidation));
+        return html_entity_decode(json_encode($arrValidation, JSON_THROW_ON_ERROR));
     }
 }
